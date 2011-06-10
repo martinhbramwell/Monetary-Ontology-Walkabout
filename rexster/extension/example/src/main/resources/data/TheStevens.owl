@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY grandpa "http://grandpa.mowa.justtrade.net#" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY foaf "http://xmlns.com/foaf/0.1/#" >
+]>
+
+
+<rdf:RDF
+		xmlns="http://justtrade.net#"
+        xml:base="http://grandpa.mowa.justtrade.net"
+		xmlns:grandpa="http://grandpa.mowa.justtrade.net#"
+	    xmlns:purl="http://purl.org/vocab/relationship#"
+		xmlns:test="http://test#"
+	    xmlns:foaf="http://xmlns.com/foaf/0.1#"
+	    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	    xmlns:owl="http://www.w3.org/2002/07/owl#"
+	    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    >
+     
+    <owl:Ontology rdf:about=""/>
+
+	<rdf:Description rdf:about="http://test#PersonA">
+		<test:litProperty>Bob</test:litProperty>
+	</rdf:Description>
+
+	<rdf:Description rdf:about="http://test#PersonB">
+		<test:litProperty>Tom</test:litProperty>
+	</rdf:Description>
+    
+  <owl:Class rdf:ID="NotRecorded">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Person"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="StepParent">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Person"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="StepMother">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#StepParent"/>
+          <owl:Class rdf:about="#Woman"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  
+
+</rdf:RDF>

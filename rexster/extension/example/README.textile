@@ -1,0 +1,6 @@
+h1. OWL File Loader Example
+
+The example demonstrates how an Web Ontology Language (OWL) file could be loaded into Blueprints managed database through Rexster's REST interface.
+
+Further it takes two key aspects of the provided ontology: persons & family relationships, and provides direct REST style access to them.  This follows the "HATEAOS":http://en.wikipedia.org/wiki/HATEOAS pattern of providing callers with URLs that guide them through further related information sites.
+

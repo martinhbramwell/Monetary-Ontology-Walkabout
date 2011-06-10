@@ -1,0 +1,9 @@
+com.tinkerpop.rexster.extension.GremlinExtension
+
+com.tinkerpop.rexster.kibbles.sample.PingExtension
+# com.tinkerpop.rexster.kibbles.sample.MapConfigurationExtension
+# com.tinkerpop.rexster.kibbles.sample.ProducesXmlExtension
+com.tinkerpop.rexster.kibbles.sample.SimplePathExtension
+# com.tinkerpop.rexster.kibbles.sample.SimpleRootExtension
+
+net.justtrade.rest.mowa.StudyPathExtension

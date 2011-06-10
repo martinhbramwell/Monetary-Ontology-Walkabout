@@ -1,0 +1,137 @@
+<project name="MyProject" default="dist" basedir=".">
+	
+	<description>Move MOWa stuff to Rexster directory.</description>
+	<!-- set global properties for this build -->
+	<property environment="env"/>
+	<property name="M2_REPO" value="${env.M2_REPO}"/>
+	<property name="GROOVY_HOME" value="${env.GROOVY_HOME}"/>
+	<property name="GROOVY_LIB" value="${GROOVY_HOME}/lib"/>
+	<property name="REXSTER_HOME" value="${env.REXSTER_HOME}"/>
+	<property name="REXSTER_VERSION" value="rexster-0.4-SNAPSHOT"/>
+	<property name="REXSTER_SERVER" value="${REXSTER_HOME}/target/${REXSTER_VERSION}-standalone/"/>
+	<property name="REXSTER_LIB" value="${REXSTER_SERVER}lib"/>
+	<property name="REXSTER_EXT" value="${REXSTER_SERVER}ext"/>
+	
+	<property name="FILEUPLOAD_JAR_VERSION" value="1.2"/>
+	<property name="FILEUPLOAD_JAR_DIR" value="${M2_REPO}/commons-fileupload/commons-fileupload/${FILEUPLOAD_JAR_VERSION}"/>
+	
+	<property name="JENA_JAR" value="jena"/>
+	<property name="JENA_JAR_VERSION" value="2.6.4"/>
+	<property name="JENA_JAR_DIR" value="${M2_REPO}/com/hp/hpl/jena/${JENA_JAR}/${JENA_JAR_VERSION}"/>
+	
+	<property name="JENA_IRI_JAR" value="iri"/>   <!--  .....\.m2\repository\com\hp\hpl\jena\iri\0.8 -->
+	<property name="JENA_IRI_JAR_VERSION" value="0.8"/>
+	<property name="JENA_IRI_JAR_DIR" value="${M2_REPO}/com/hp/hpl/jena/${JENA_IRI_JAR}/${JENA_IRI_JAR_VERSION}"/>
+	
+	<property name="ICU4J_JAR" value="icu4j"/>   <!--  .....\.m2\repository\com\ibm\icu\icu4j\3.4.4 -->
+	<property name="ICU4J_JAR_VERSION" value="3.4.4"/>
+	<property name="ICU4J_JAR_DIR" value="${M2_REPO}/com/ibm/icu/${ICU4J_JAR}/${ICU4J_JAR_VERSION}"/>
+	
+	<property name="XERCES_JAR" value="xercesImpl"/>   <!--  .....\.m2\repository\xerces\xercesImpl\2.8.1 -->
+	<property name="XERCES_JAR_VERSION" value="2.8.1"/>
+	<property name="XERCES_JAR_DIR" value="${M2_REPO}/xerces/${XERCES_JAR}/${XERCES_JAR_VERSION}"/>
+	
+	<property name="resources" location="src/main/resources"/>
+	<property name="target" location="target"/>
+	
+	<path id="support.classes">
+	    <pathelement location="${GROOVY_LIB}/groovy-1.8.0.jar" />
+	    <pathelement location="${GROOVY_LIB}/asm-3.2.jar" />
+	    <pathelement location="${GROOVY_LIB}/antlr-2.7.7.jar" />
+	    <pathelement location="${GROOVY_LIB}/ivy-2.2.0.jar" />
+	</path>
+	
+	<taskdef name="groovy"
+	     classname="org.codehaus.groovy.ant.Groovy"
+         classpathref="support.classes"/>
+	
+	
+	<target name="test" description="test the result" >
+		
+		<groovy classpath="./target/classes" >
+		
+			rft = new RexsterFunctionalTest()
+			rft.main()
+		
+		</groovy>
+		
+	</target>
+	
+
+	<target name="dist" description="generate the distribution" >
+		
+		<echo message=""/>
+		<echo message="--------------------[ Stop ReXster ]------------------------"/>
+		<exec 	os="Windows XP" 
+				dir="${REXSTER_HOME}" 
+				executable="cmd">
+			<arg value="/c"/>
+		    <arg value="rexster-stop.bat"/>
+		</exec>
+		
+		<echo message=""/>
+		<echo message="-[ Make sure our config files are newer than theirs ]---"/>
+		<touch file="${resources}/config/myRexster.xml"/>
+		<touch file="${resources}/config/rexster-restart.bat"/>
+		
+		<echo message=""/>
+		<echo message="-----------[ Copy myRexster.xml to rexster root ]------------"/>
+		<copy file="${resources}/config/myRexster.xml" todir="${REXSTER_HOME}" />
+		<copy file="${resources}/config/rexster-restart.bat" todir="${REXSTER_HOME}" />
+		
+		<echo message=""/>
+		<echo message="----------[ Copy fileUpload jar to their lib dir ]-----------"/>
+		<copy file="${FILEUPLOAD_JAR_DIR}/commons-fileupload-${FILEUPLOAD_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+		
+		<echo message=""/>
+		<echo message="-------------[ Copy Jena jar to their lib dir ]--------------"/>
+		<copy file="${JENA_JAR_DIR}/${JENA_JAR}-${JENA_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+		
+		<echo message=""/>
+		<echo message="-----------[ Copy Jena IRI jar to their lib dir ]------------"/>
+		<copy file="${JENA_IRI_JAR_DIR}/${JENA_IRI_JAR}-${JENA_IRI_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+		
+		<echo message=""/>
+		<echo message="----------[ Copy IBM ICU4j jar to their lib dir ]------------"/>
+		<copy file="${ICU4J_JAR_DIR}/${ICU4J_JAR}-${ICU4J_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+		
+		<echo message=""/>
+		<echo message="-----------[ Copy XERCES jar to their lib dir ]--------------"/>
+		<copy file="${XERCES_JAR_DIR}/${XERCES_JAR}-${XERCES_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+
+		<echo message=""/>
+		<echo message="-------[ Copy our jar to their extensions directory  ]-------"/>
+		<copy file="${target}/mowa-study-0.1-SNAPSHOT.jar" todir="${REXSTER_EXT}" />
+		
+		<echo message=""/>
+		<echo message="------------------[ Restart reXster ]------------------------"/>
+		<sleep seconds="4"/>
+		<exec 	os="Windows XP" 
+				dir="${REXSTER_HOME}" 
+				executable="cmd"
+				spawn="true">
+			<arg value="/c"/>
+		    <arg value="rexster-start.bat"/>
+			<arg value="-configuration=myRexster.xml"/>
+		</exec>
+				
+		<echo message=""/>
+		<echo message="------------------[ Check functioning ]-----------------------"/>
+		<exec executable="curl">
+			<arg value="-sX"/>
+			<arg value="GET"/>
+			<arg value="http://localhost:8182/"/>
+		</exec>
+				
+		<echo message=""/>
+		<echo message="--------------------[ Stop ReXster ]------------------------"/>
+		<exec 	os="Windows XP" 
+				dir="${REXSTER_HOME}" 
+				executable="cmd">
+			<arg value="/c"/>
+		    <arg value="rexster-stop.bat"/>
+		</exec>
+		
+	</target>
+
+</project>
