@@ -11,6 +11,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -31,6 +32,13 @@ public class MultipartUploadHandler {
 	private static final String GRAPH_ARCHIVE = "location-of-graph-archive";
 	private static final String TEMP_FILES = "location-of-temp-files";
 
+	/*
+	 * This method leverages the capabilities of the the Apache project org.apache.commons.fileupload
+	 * to load files with very little coding necessary.  They are first streamed directly to the
+	 * "location-of-temp-files", and only processed individually, and stored permanently  at 
+	 * "location-of-graph-archive".  Both of those locations are user-defined in rexster.xml 
+	 * 
+	 */
 	public ExtensionResponse handleUpload(AbstractStudyExtension caller, HttpServletRequest httpRequest, RexsterResourceContext context)
 	{
 		final String sMETHOD = CLASS_NAME + "injectRDF() --> ";
@@ -58,6 +66,8 @@ public class MultipartUploadHandler {
 		Iterator<FileItem> iter = null;
 		FileItem item = null;
 		long sizeInBytes = -999;
+		
+		String uploadedFile = null;
 
 		try {
 
@@ -68,24 +78,45 @@ public class MultipartUploadHandler {
 			String name = "";
 			iter = items.iterator();
 
+			JSONObject filesDetails = new JSONObject();
 			// Parse the request
 			while (iter.hasNext()) {
 				item = iter.next();
 				name = item.getFieldName();
+				sizeInBytes = item.getSize();
+				
+				JSONObject fileDetails = new JSONObject();
 
 				if (item.isFormField()) {
 
 					System.out.println(sMETHOD + "Is Form Field -- Form name '" + name + ".");
 
 				} else {
+					
+					System.out.println(sMETHOD + "Receiving File Upload.");
+					System.out.println
+					(
+							sMETHOD 
+							+       "Item named '" + name
+							+            "' is a " + item.getSize()
+							+ " byte file named '" + item.getName() 
+							+        "'.  Type : " + item.getContentType()
+					);
+
+					
 
 					System.out.println(sMETHOD + "Receiving File Upload.");
+					uploadedFile = archiveTripleFile(item, pathArchive);
+					
+					System.out.println(sMETHOD + "Receiving File Upload.");
 					RDF_Loader loader = new RDF_Loader();
-					loader.injectRDF(caller, item, context);
+					loader.injectRDF(caller, uploadedFile, name, context);
 
 				}
+				fileDetails.append("File size", new Long(sizeInBytes));
+				filesDetails.append(name, fileDetails);
 			}
-			json.append("Byte Count", sizeInBytes);
+			json.append("Uploaded files", filesDetails);
 
 		} catch (FileUploadException fuex) {
 			System.out.println(sMETHOD + "* * * File Upload Failure * * * \n" + fuex.getLocalizedMessage());
@@ -105,5 +136,24 @@ public class MultipartUploadHandler {
 		return ExtensionResponse.ok(json);
 		
 	}		
+	
+	private String archiveTripleFile (FileItem item, String pathArchive) throws Exception
+	{
+		final String sMETHOD = CLASS_NAME + "archiveTripleFile(FileItem, ExtensionConfiguration) --> ";
+
+		String fileName = item.getName();
+
+		System.out.println(sMETHOD + "Storing locally the file : '" + fileName + "'");
+
+		File dirArchive = new File(pathArchive + fileName);
+
+		item.write(dirArchive);
+		System.out.println(sMETHOD + "Rewritten to '" + pathArchive + fileName + "'.");
+
+		return pathArchive + fileName;
+
+	}
+
+	
 
 }

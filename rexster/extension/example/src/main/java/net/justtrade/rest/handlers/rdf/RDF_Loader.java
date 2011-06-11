@@ -1,12 +1,8 @@
 package net.justtrade.rest.handlers.rdf;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Map;
-
-import org.apache.commons.fileupload.FileItem;
-import org.codehaus.jettison.json.JSONException;
 
 import net.justtrade.rest.mowa.AbstractStudyExtension;
 import net.justtrade.rest.util.RDF_Analyzer;
@@ -20,6 +16,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+
 import com.tinkerpop.blueprints.pgm.Edge;
 import com.tinkerpop.blueprints.pgm.Index;
 import com.tinkerpop.blueprints.pgm.IndexableGraph;
@@ -43,11 +40,10 @@ public class RDF_Loader {
 	private Index<Vertex> idxVertices = null;
 
 	
-	public void injectRDF(AbstractStudyExtension caller, FileItem fileDescriptor, RexsterResourceContext context)
+	public void injectRDF(AbstractStudyExtension caller, String tripleFile, String refNode, RexsterResourceContext context)
 	{
 		final String sMETHOD = CLASS_NAME + "injectRDF() --> ";
 		
-		String name = fileDescriptor.getFieldName();
 		RexsterApplicationGraph rag = context.getRexsterApplicationGraph();
 		ExtensionConfiguration configuration = rag.findExtensionConfiguration(caller.getExtensionNameSpace(), caller.getExtensionName());
 		Map<String, String> cfg = configuration.tryGetMapFromConfiguration();
@@ -55,57 +51,22 @@ public class RDF_Loader {
 		String pathArchive = cfg.get(GRAPH_ARCHIVE) + "/";
 		System.out.println(sMETHOD + "File archive path : " + pathArchive);
 		
-		System.out.println(sMETHOD + "Receiving File Upload.");
-		System.out.println
-		(
-				sMETHOD 
-				+       "Item named '" + name
-				+            "' is a " + fileDescriptor.getSize()
-				+ " byte file named '" + fileDescriptor.getName() 
-				+        "'.  Type : " + fileDescriptor.getContentType()
-		);
-
-		String tripleFile = null;
 		try {
-			tripleFile = archiveTripleFile(fileDescriptor, pathArchive);
-
 			System.out.println(sMETHOD + "Writing " + tripleFile + " contents to triple store.");
-			writeToGraphStore(name, tripleFile, (IndexableGraph)rag.getGraph());
+			writeToGraphStore(refNode, tripleFile, (IndexableGraph)rag.getGraph());
 			
 		} catch (MalformedURLException mfuex) {
 			System.out.println(sMETHOD + "* * * Bad URL failure * * * \n" + mfuex.getLocalizedMessage() + "\n" + mfuex.getStackTrace());
 
-		} catch (IOException ioex) {
-			System.out.println(sMETHOD + "* * * Input/output Failure * * * \n" + ioex.getLocalizedMessage());
-
 		} catch (Exception ex) {
 			System.out.println(sMETHOD + "* * * Input/output problem with upload file * * * \n" + ex.getLocalizedMessage());
 
-		} finally {
-			fileDescriptor = null;
 		}
 
 		System.out.println(sMETHOD + "Finished graph injection : " + tripleFile + ".");
 
 		RDF_Analyzer.analyzeModelData();			  	  	
 
-
-	}
-
-	private String archiveTripleFile (FileItem item, String pathArchive) throws Exception
-	{
-		final String sMETHOD = CLASS_NAME + "archiveTripleFile(FileItem, ExtensionConfiguration) --> ";
-
-		String fileName = item.getName();
-
-		System.out.println(sMETHOD + "Storing locally the file : '" + fileName + "'");
-
-		File dirArchive = new File(pathArchive + fileName);
-
-		item.write(dirArchive);
-		System.out.println(sMETHOD + "Rewritten to '" + pathArchive + fileName + "'.");
-
-		return pathArchive + fileName;
 
 	}
 

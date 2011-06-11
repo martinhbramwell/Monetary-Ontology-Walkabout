@@ -47,11 +47,6 @@ public class StudyPathExtension extends AbstractStudyExtension {
 	public static final String basePath = EXTENSION_NAMESPACE + "/" + EXTENSION_NAME;
 	public static final String CLASS_NAME = "\nStudyPathExtension.";
 
-	
-	
-	
-	
-	
 	/**
 	 * This is the method designated to handle the root of the Ray Stevens Family Ontology.
 	 * 
@@ -69,60 +64,76 @@ public class StudyPathExtension extends AbstractStudyExtension {
 	{
 		final String sMETHOD = CLASS_NAME + "manageBasePath() --> ";
 		System.out.println(sMETHOD + "Base path :: " + basePath);
-		final String REST_PATH = "";
 
+		HttpServletRequest httpRequest = context.getRequest();
+		String httpMethod = httpRequest.getMethod();
+
+		if (ServletFileUpload.isMultipartContent(httpRequest)) {
+			return basePath_PUT(context, graph);
+		} else {
+			switch (HTTPMethod.convert(httpMethod)) {
+			case HTTPMethod.POST :
+				return basePath_POST(context, graph);
+			case HTTPMethod.GET :
+				return basePath_GET(context, graph);
+			default:
+				return ExtensionResponse.error(new UnsupportedMethodException(httpMethod));
+			}
+		}
+	}
+
+	public ExtensionResponse basePath_PUT (
+			RexsterResourceContext context,
+			RexsterApplicationGraph graph
+	)
+	{
+		final String sMETHOD = CLASS_NAME + "basePath_PUT(RexsterResourceContext, RexsterApplicationGraph) --> ";
+		
+		System.out.println(sMETHOD + "ProcessIng 'Multipart Content'!");
+
+		HttpServletRequest httpRequest = context.getRequest();
 		ArrayList<String> hateaos = new ArrayList<String>();
 		hateaos.add("\"title\": \"List available persons.\" \"href\": \"" + basePath + "/persons\"");
 		hateaos.add("\"title\": \"List available relationships.\" \"href\": \"" + basePath + "/relationships\"");
+		hateaos.add("\"title\": \"Multipart content received at -- \" \"href\": \"/" + basePath);
 
-		RexsterApplicationGraph rag = context.getRexsterApplicationGraph();
-		HttpServletRequest httpRequest = context.getRequest();
-
-		JSONObject json = new JSONObject();
-//		try {
-			if (ServletFileUpload.isMultipartContent(httpRequest)) {
-
-				System.out.println(sMETHOD + "Detected 'Multipart Content'! Can be processed only at root level.");
-
-				hateaos.add("\"title\": \"Multipart content received at -- \" \"href\": \"/" + basePath);
-
-				MultipartUploadHandler handler = new MultipartUploadHandler();
-				return handler.handleUpload(this, httpRequest, context);
-
-			} else {
-				String httpMethod = httpRequest.getMethod();
-
-				switch (HTTPMethod.convert(httpMethod)) {
-
-				case HTTPMethod.POST :
-					
-					System.out.println(sMETHOD + "RexsterResourceContext :: getRequestObject " + context.getRequestObject().toString());
-					hateaos.add("{\"Added Person :\" \"href\": \"" + basePath + "/" + REST_PATH + "\"}");
-					return toStringIt(rag.getGraph(), "persons", hateaos);
-
-				case HTTPMethod.GET :
-					
-					hateaos.add("{\"title\": \"List Persons.\" \"href\": \"" + basePath + "/" + REST_PATH + "\"}");
-					return toStringIt(rag.getGraph(), "persons", hateaos);
-
-				default:
-
-					return ExtensionResponse.error(new UnsupportedMethodException(httpMethod));
-				}
-			}
-//		} catch(JSONException jsonex) {
-//
-//			ExtensionMethod extMethod = context.getExtensionMethod();
-//			return ExtensionResponse.error(
-//					"the reply parameter cannot be empty",
-//					null,
-//					Response.Status.BAD_REQUEST.getStatusCode(),
-//					null,
-//					generateErrorJson(extMethod.getExtensionApiAsJson()));
-//		}
+		MultipartUploadHandler handler = new MultipartUploadHandler();
+		return handler.handleUpload(this, httpRequest, context);
 	}
 
-	
+	public ExtensionResponse basePath_POST (
+			RexsterResourceContext context,
+			RexsterApplicationGraph graph
+	)
+	{
+		final String sMETHOD = CLASS_NAME + "basePath_POST(RexsterResourceContext, RexsterApplicationGraph) --> ";
+		final String REST_PATH = "";
+		
+		RexsterApplicationGraph rag = context.getRexsterApplicationGraph();
+		
+		System.out.println(sMETHOD + "RexsterResourceContext :: getRequestObject " + context.getRequestObject().toString());
+		ArrayList<String> hateaos = new ArrayList<String>();
+		hateaos.add("{\"Added Person :\" \"href\": \"" + basePath + "/" + REST_PATH + "\"}");
+		return toStringIt(rag.getGraph(), "persons", hateaos);
+		
+	}
+
+	public ExtensionResponse basePath_GET (
+			RexsterResourceContext context,
+			RexsterApplicationGraph graph
+	)
+	{
+		final String sMETHOD = CLASS_NAME + "basePath_GET(RexsterResourceContext, RexsterApplicationGraph) --> ";
+		final String REST_PATH = "";
+		ArrayList<String> hateaos = new ArrayList<String>();
+		hateaos.add("\"title\": \"List available persons.\" \"href\": \"" + basePath + "/persons\"");
+		hateaos.add("\"title\": \"List available relationships.\" \"href\": \"" + basePath + "/relationships\"");
+		RexsterApplicationGraph rag = context.getRexsterApplicationGraph();
+
+		System.out.println(sMETHOD + "RexsterResourceContext :: getRequestObject " + context.getRequestObject().toString());
+		return toStringIt(rag.getGraph(), "persons", hateaos);
+		
+	}
 	
 	
 	
