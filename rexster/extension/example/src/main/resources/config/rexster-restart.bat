@@ -13,8 +13,8 @@ cd %TARGET%\bin\
 rem call rexster-stop.bat %*
 call rexster-stop.bat
 
-echo Wait 3 seconds for it to completely disappear ...
-PING 1.1.1.1 -n 1 -w 3000 >NUL
+echo Wait 4 seconds for it to completely disappear ...
+PING 1.1.1.1 -n 1 -w 4000 >NUL
 echo Should be gone now.  Now restart it.
 
 call rexster-start.bat -webroot target/%TARGET%/bin/public %*

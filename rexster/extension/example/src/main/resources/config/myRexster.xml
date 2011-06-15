@@ -23,39 +23,18 @@
         
 	</web-server-configuration>
     <graphs>
-		<graph>
-            <graph-enabled>true</graph-enabled>
-            <graph-name>tinkergraph</graph-name>
-            <graph-type>tinkergraph</graph-type>
-            <graph-file>data/graph-example-1.xml</graph-file>
-            <extensions>
-                <allows>
-                    <allow>tp:gremlin</allow>
-					<allow>tp-sample:*</allow>
-					<allow>mowa:stevens</allow>
-                </allows>
-				<extension>
-				  <namespace>tp-sample</namespace>
-				  <name>map-config</name>
-				  <configuration>
-					<some-key>some-value</some-key>
-					<other-key>other-value</other-key>
-				  </configuration>
-				</extension>
-			</extensions>
-        </graph>
         <graph>
             <graph-enabled>true</graph-enabled>
             <graph-name>neo4jsample</graph-name>
             <graph-type>neo4jgraph</graph-type>
-            <graph-file>data/rexster-graph</graph-file>
+            <graph-file>data/mowa-graph</graph-file>
             <extensions>
                 <allows>
                     <allow>tp:gremlin</allow>
 					<allow>tp-sample:*</allow>
 					<allow>mowa:stevens</allow>
                 </allows>
-				<extension>
+    			<extension>
 				  <namespace>mowa</namespace>
 				  <name>stevens</name>
 				  <configuration>
@@ -114,6 +93,26 @@
             </properties>
         </graph>
         
+		<graph>
+            <graph-enabled>true</graph-enabled>
+            <graph-name>tinkergraph</graph-name>
+            <graph-type>tinkergraph</graph-type>
+            <graph-file>data/graph-example-1.xml</graph-file>
+            <extensions>
+                <allows>
+                    <allow>tp:gremlin</allow>
+					<allow>tp-sample:*</allow>
+                </allows>
+				<extension>
+				  <namespace>tp-sample</namespace>
+				  <name>map-config</name>
+				  <configuration>
+					<some-key>some-value</some-key>
+					<other-key>other-value</other-key>
+				  </configuration>
+				</extension>
+			</extensions>
+        </graph>
         
         <!--  graph>
             <graph-name>gratefulgraph</graph-name>

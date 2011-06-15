@@ -1,10 +1,8 @@
 package net.justtrade.rest.handlers.rdf;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Map;
 
-import net.justtrade.rest.mowa.AbstractStudyExtension;
 import net.justtrade.rest.util.RDF_Analyzer;
 import net.justtrade.rest.util.UnsupportedTypeException;
 
@@ -24,13 +22,11 @@ import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.util.IndexableGraphHelper;
 import com.tinkerpop.rexster.RexsterApplicationGraph;
 import com.tinkerpop.rexster.RexsterResourceContext;
-import com.tinkerpop.rexster.extension.ExtensionConfiguration;
 
 public class RDF_Loader {
 
 	public static final String CLASS_NAME = "\nRDF_Loader.";
 
-	private static final String GRAPH_ARCHIVE = "location-of-graph-archive";
 	private static final String FIELD_ENTITY_NAME = "name";
 
 
@@ -40,20 +36,20 @@ public class RDF_Loader {
 	private Index<Vertex> idxVertices = null;
 
 	
-	public void injectRDF(AbstractStudyExtension caller, String tripleFile, String refNode, RexsterResourceContext context)
+	public void injectRDF(Map<String, String> _names, String _tripleFile, String refNode, RexsterResourceContext _context)
 	{
 		final String sMETHOD = CLASS_NAME + "injectRDF() --> ";
 		
-		RexsterApplicationGraph rag = context.getRexsterApplicationGraph();
-		ExtensionConfiguration configuration = rag.findExtensionConfiguration(caller.getExtensionNameSpace(), caller.getExtensionName());
-		Map<String, String> cfg = configuration.tryGetMapFromConfiguration();
-
-		String pathArchive = cfg.get(GRAPH_ARCHIVE) + "/";
-		System.out.println(sMETHOD + "File archive path : " + pathArchive);
+		RexsterApplicationGraph rag = _context.getRexsterApplicationGraph();
+//		ExtensionConfiguration configuration = rag.findExtensionConfiguration(_names.get(UploadHandler.EXTENSION_NAME_SPACE), _names.get(UploadHandler.EXTENSION_NAME));
+//		Map<String, String> cfg = configuration.tryGetMapFromConfiguration();
+//
+//		String pathArchive = cfg.get(GRAPH_ARCHIVE) + "/";
+//		System.out.println(sMETHOD + "File archive path : " + pathArchive);
 		
 		try {
-			System.out.println(sMETHOD + "Writing " + tripleFile + " contents to triple store.");
-			writeToGraphStore(refNode, tripleFile, (IndexableGraph)rag.getGraph());
+			System.out.println(sMETHOD + "Writing " + _tripleFile + " contents to triple store.");
+			writeToGraphStore(refNode, _tripleFile, (IndexableGraph) rag.getGraph());
 			
 		} catch (MalformedURLException mfuex) {
 			System.out.println(sMETHOD + "* * * Bad URL failure * * * \n" + mfuex.getLocalizedMessage() + "\n" + mfuex.getStackTrace());
@@ -63,19 +59,19 @@ public class RDF_Loader {
 
 		}
 
-		System.out.println(sMETHOD + "Finished graph injection : " + tripleFile + ".");
+		System.out.println(sMETHOD + "Finished graph injection : " + _tripleFile + ".");
 
 		RDF_Analyzer.analyzeModelData();			  	  	
 
 
 	}
 
-	private void writeToGraphStore (String refNode, String tripleFile, IndexableGraph graph) throws MalformedURLException
+	private void writeToGraphStore (String refNode, String _tripleFile, IndexableGraph graph) throws MalformedURLException
 	{
 		final String sMETHOD = CLASS_NAME + "writeToGraphStore(String, String, IndexableGraph) --> ";
 
 		Model model = ModelFactory.createDefaultModel();
-		model.read("file:\\" + tripleFile);
+		model.read("file:\\" + _tripleFile);
 
 		StmtIterator it = model.listStatements();
 		while (it.hasNext()) {
@@ -180,15 +176,15 @@ public class RDF_Loader {
 								+ "\n Is Blank ? [" + predicate.isBlank() + "]. Is Concrete ? [" + predicate.isConcrete() + "]. Is Literal ? [" + predicate.isLiteral() + "]. Is Variable ? [" + predicate.isVariable() + "]."  
 						);
 					} else {
-						System.out.println(sMETHOD + "A"
+						System.out.println(sMETHOD
 								+ "\n" + ((Node_URI) predicate).getURI() 
 								+ "\n" + ((Node_URI) predicate).getLocalName()
 								+ "\n" + ((Node_URI) predicate).getNameSpace()
 						);
 						Edge edge = graph.addEdge(((Node_URI) predicate).getURI(), subjectVertex, objectVertex, ((Node_URI) predicate).getLocalName());
-						System.out.println(sMETHOD + "B");
+//						System.out.println(sMETHOD + "B");
 						logTriple(subjectVertex, edge, objectVertex);
-						System.out.println(sMETHOD + "D");
+//						System.out.println(sMETHOD + "D");
 					}
 
 				} catch (Throwable th) {

@@ -35,13 +35,13 @@
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-core</artifactId>
-            <version>0.6</version>
+            <version>0.8-SNAPSHOT</version>
         </dependency>
         
         <dependency>
           <groupId>com.tinkerpop</groupId>
           <artifactId>rexster</artifactId>
-          <version>0.3-SNAPSHOT</version>
+          <version>0.4-SNAPSHOT</version>
         </dependency>
         <!-- CONFIGURATION -->
         <dependency>
@@ -201,7 +201,7 @@
 				<version>1.6</version>
 				<executions>
 
-                    <execution>
+                    <!--  execution>
                         <id>compile</id>
                         <phase>compile</phase>
                         <configuration>
@@ -221,7 +221,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                    </execution>
+                    </execution -->
                     
                     
 					<execution>
