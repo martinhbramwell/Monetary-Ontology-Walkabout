@@ -131,9 +131,22 @@
 		</dependency>
 		
     </dependencies>
+    
     <repositories>
     
-		<repository>
+        <repository>
+            <id>fortytwo</id>
+            <name>fortytwo.net Maven repository</name>
+            <url>http://fortytwo.net/maven2</url>
+        </repository>
+        
+        <repository>
+            <id>aduna-repo</id>
+            <name>Aduna repository</name>
+            <url>http://repo.aduna-software.org/maven2/releases</url>
+        </repository>
+        
+        <repository>
 			<id>ibiblio-mirrors</id>
 			<name>Ibiblio</name>
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
@@ -151,12 +164,14 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </repository>
+        
         <repository>
             <id>maven-repository.dev.java.net</id>
             <name>Java.net Maven 1 Repository (legacy)</name>
             <url>http://download.java.net/maven/1</url>
             <layout>legacy</layout>
         </repository>
+        
         <repository>
             <id>tinkerpop-repository</id>
             <name>TinkerPop Maven2 Repository</name>
