@@ -230,7 +230,9 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<target>
+							<target name="dist"
+									if="doDist"
+									description="A short description of this target's function">
   								<ant antfile="build.xml" target="dist"/>
   								<!-- ant antfile="build.xml" target="test"/  -->
 							</target>

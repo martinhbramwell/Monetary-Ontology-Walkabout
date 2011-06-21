@@ -7,7 +7,7 @@
 	<property name="GROOVY_HOME" value="${env.GROOVY_HOME}"/>
 	<property name="GROOVY_LIB" value="${GROOVY_HOME}/lib"/>
 	<property name="REXSTER_HOME" value="${env.REXSTER_HOME}"/>
-	<property name="REXSTER_VERSION" value="rexster-0.4-SNAPSHOT"/>
+	<property name="REXSTER_VERSION" value="rexster-0.5-SNAPSHOT"/>
 	<property name="REXSTER_SERVER" value="${REXSTER_HOME}/target/${REXSTER_VERSION}-standalone/"/>
 	<property name="REXSTER_LIB" value="${REXSTER_SERVER}lib"/>
 	<property name="REXSTER_EXT" value="${REXSTER_SERVER}ext"/>
