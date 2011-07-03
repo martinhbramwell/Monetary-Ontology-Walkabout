@@ -45,7 +45,7 @@ public class RelationshipsManager extends MOWaExtension {
 		RexsterApplicationGraph rag = context.getRexsterApplicationGraph();
 
 		ArrayList<String> hateaos = new ArrayList<String>();
-		System.out.println(sMETHOD + "Detected 'Multipart Content'! Can be processed only at root level.");
+		System.out.println(sMETHOD + "Detected Multipart Content! Can be processed only at root level.");
 
 		hateaos.add("\"title\": \"Multipart content received at -- \" \"href\": \"/" + basePath);
 		return toStringIt(rag.getGraph(), REST_PATH, hateaos);

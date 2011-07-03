@@ -97,7 +97,7 @@ public class StudyPathExtension extends AbstractSampleExtension {
 //
 //		if (ServletFileUpload.isMultipartContent(httpRequest)) {
 //
-//			System.out.println(sMETHOD + "Detected 'Multipart Content'! Can be processed only at root level.");
+//			System.out.println(sMETHOD + "Detected Multipart Content! Can be processed only at root level.");
 //
 //			hateaos.add("\"title\": \"Multipart content received at -- \" \"href\": \"/" + basePath);
 //

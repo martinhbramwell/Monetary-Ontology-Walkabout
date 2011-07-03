@@ -45,9 +45,9 @@ public class MultiPartUploadHandler extends UploadHandler {
 		
 		File dirTmp = new File(_names.get(TEMP_FILES) + "/");
 		
-		msg = "Detected 'Multipart Content'! Will process as POST of one or more files.";
+		msg = "Detected Multipart Content! Will process as POST of one or more files.";
 		System.out.println(sMETHOD + msg);
-		_json.append("PUT behaviour", msg);
+		_json.put("PUT/POST behaviour", msg);
 		
 		filesDetails = new JSONObject();
 
@@ -66,9 +66,11 @@ public class MultiPartUploadHandler extends UploadHandler {
 
 		String name = "";
 		iter = items.iterator();
+		int filesCount = 0;
 
 		// Parse the request
 		while (iter.hasNext()) {
+			filesCount++;
 			item = iter.next();
 			name = item.getFieldName();
 			sizeInBytes = item.getSize();
@@ -101,11 +103,12 @@ public class MultiPartUploadHandler extends UploadHandler {
 				loader.injectRDF(_names, uploadedFile, name, _context);
 
 			}
-			fileDetails.append("File size", new Long(sizeInBytes));
-			filesDetails.append(name, fileDetails);
+			fileDetails.put("name", name);
+			fileDetails.put("size", new Long(sizeInBytes));
+			filesDetails.append("file_" + filesCount, fileDetails);
 		}
-		
-		_json.append("Uploaded files", filesDetails);
+		_json.put("filesCount", filesCount);
+		_json.put("files", filesDetails);
 		
 		
 		return ExtensionResponse.ok(_json);

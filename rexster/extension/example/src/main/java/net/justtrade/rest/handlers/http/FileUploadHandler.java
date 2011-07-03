@@ -39,17 +39,17 @@ public class FileUploadHandler {
 	{
 		final String sMETHOD = CLASS_NAME + "handleUpload(Map, RexsterResourceContext, JSONObject) --> ";
 
-		JSONObject json = new JSONObject();
+		JSONObject jsonRslt = new JSONObject();
 		JSONObject filesDetails = null;
 		JSONObject fileDetails = null;
 
 		String msg = "";
 		HttpServletRequest request = _context.getRequest();
 
-		msg = "Not 'Multipart Content'! Will process as PUT of a single file.";
+		msg = "Not Multipart Content! Will process as PUT of a single file.";
 		System.out.println(sMETHOD + msg);
 
-		json.append("PUT behaviour", msg);
+		jsonRslt.put("PUT/POST behaviour", msg);
 		filesDetails = new JSONObject();
 		fileDetails = new JSONObject();
 
@@ -119,13 +119,14 @@ public class FileUploadHandler {
 				{try {destination.close();} catch (IOException e) {;}}
 		}
 
-		json.append("File count", 1);
-		fileDetails.append("File size", new Long(request.getContentLength()));
-		filesDetails.append(to_name, fileDetails);
-		json.append("Uploaded file", filesDetails);
+		jsonRslt.put("filesCount", 1);
+		fileDetails.put("name", to_name);
+		fileDetails.put("size", new Long(request.getContentLength()));
+		filesDetails.append("file_1", fileDetails);
+		jsonRslt.put("files", filesDetails);
 
 
-		return ExtensionResponse.ok(json);
+		return ExtensionResponse.ok(jsonRslt);
 
 	}		
 
