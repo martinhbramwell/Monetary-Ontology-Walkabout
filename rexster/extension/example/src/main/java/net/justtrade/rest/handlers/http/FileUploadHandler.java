@@ -49,7 +49,7 @@ public class FileUploadHandler {
 		msg = "Not Multipart Content! Will process as PUT of a single file.";
 		System.out.println(sMETHOD + msg);
 
-		jsonRslt.put("PUT/POST behaviour", msg);
+		jsonRslt.put("PUT or POSTbehaviour", msg);
 		filesDetails = new JSONObject();
 		fileDetails = new JSONObject();
 

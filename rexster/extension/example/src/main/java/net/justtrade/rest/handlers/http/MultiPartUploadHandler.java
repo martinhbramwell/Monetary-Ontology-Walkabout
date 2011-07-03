@@ -47,7 +47,7 @@ public class MultiPartUploadHandler extends UploadHandler {
 		
 		msg = "Detected Multipart Content! Will process as POST of one or more files.";
 		System.out.println(sMETHOD + msg);
-		_json.put("PUT/POST behaviour", msg);
+		_json.put("PUT or POSTbehaviour", msg);
 		
 		filesDetails = new JSONObject();
 
