@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import net.justtrade.rest.handlers.context.RexsterResourceGETContext;
 import net.justtrade.rest.handlers.http.UploadHandler;
 
@@ -24,7 +27,7 @@ public class BasePathManager extends MOWaExtension {
 	{
 		final String sMETHOD = CLASS_NAME + "basePath_PUT(RexsterResourcePUTContext) --> ";
 		
-		System.out.println(sMETHOD + "ProcessIng 'Multipart Content'!");
+		System.out.println(sMETHOD + "ProcessIng Multipart Content!");
 		
 		names = initConfig(context);
 		if (names == null) {
@@ -36,6 +39,32 @@ public class BasePathManager extends MOWaExtension {
 			
 			UploadHandler handler = new UploadHandler();
 			return handler.handleUpload(names, context);
+		}
+	}
+		
+
+	public ExtensionResponse delete(RexsterResourceContext context)
+	{
+		final String sMETHOD = CLASS_NAME + "post(RexsterResourceContext) --> ";
+		
+		names = initConfig(context);
+		if (names == null) {
+			String message = "Found no configuration to load using : <namespace>" + getExtensionNameSpace() + "</namespace> and <name>" + getExtensionName() + "</name>.";
+			System.out.println(sMETHOD + message);
+			return ExtensionResponse.error(message);
+			
+		} else {
+			
+			JSONObject jsonRslt = new JSONObject();
+			try {
+				jsonRslt.put("behaviour", "DELETE");
+				System.out.println(sMETHOD + "\n\n\n\nReady to delete : ");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return ExtensionResponse.ok(jsonRslt);
 		}
 	}
 

@@ -13,6 +13,9 @@ import com.tinkerpop.rexster.extension.RexsterContext;
 
 import java.util.HashMap;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 /**
  * An extension that showcases the methods available to those who wish to extend Rexster.
  *
@@ -107,7 +110,7 @@ public class MOWaExtension extends MOWaExtensionAbstract {
 		final String sMETHOD = CLASS_NAME + "getBasePath(Graph) --> ";
 		System.out.println(sMETHOD + "Base path :: " + basePath);
 		
-        return toStringIt(graph, "GET graph root");
+        return toStringIt(graph, "GET graph's root");
     }
 
 //    @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.POST)
@@ -129,11 +132,11 @@ public class MOWaExtension extends MOWaExtensionAbstract {
 	}
     
     
-//    @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.PUT)
+//  @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.PUT)
 //	@ExtensionDescriptor(description = "Returns the options available for the 'Stevens' family ontology, with HttpMethod.PUT.")
-//    public ExtensionResponse doPutRootWork(@RexsterContext Graph graph) {
-//        return toStringIt(graph, "PUT root work");
-//    }
+//  public ExtensionResponse doPutRootWork(@RexsterContext Graph graph) {
+//      return toStringIt(graph, "PUT root work");
+//  }
 
 	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.PUT)
 	@ExtensionDescriptor(description = "PUT a single file towards the 'Stevens' family ontology.")
@@ -145,6 +148,19 @@ public class MOWaExtension extends MOWaExtensionAbstract {
 		BasePathManager manager = new BasePathManager(); 
 		return manager.put(context);
 
+	}
+
+    
+    
+	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.DELETE)
+	@ExtensionDescriptor(description = "DELETE all the 'Stevens' family ontology.")
+	public ExtensionResponse deleteBasePath (@RexsterContext RexsterResourceContext context)
+	{
+		final String sMETHOD = CLASS_NAME + "putBasePath(RexsterResourceContext) --> ";
+		System.out.println(sMETHOD + "Base path :: " + basePath);
+				
+		BasePathManager manager = new BasePathManager(); 
+		return manager.delete(context);
 	}
 
     
