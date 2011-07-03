@@ -21,6 +21,10 @@ echo POST relationships
 curl -sd "ID=5&Type=Pack&Name=Deck of Cards" http://localhost:8182/neo4jsample/mowa/stevens/relationships | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo . . . . . . 
 echo.
+echo PUT small file
+curl -s -T .\src\main\resources\data\theStevens.owl  -H "Content-Type: text/plain"  http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo . . . . . . 
+echo.
 echo PUT big file
 curl -s -T .\src\main\resources\data\family.swrl.owl  -H "Content-Type: text/plain"  http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo . . . . . . 
