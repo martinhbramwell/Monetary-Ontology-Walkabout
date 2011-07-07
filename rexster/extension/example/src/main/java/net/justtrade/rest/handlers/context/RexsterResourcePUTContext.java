@@ -14,7 +14,7 @@ public class RexsterResourcePUTContext extends RexsterResourceContext {
 	public RexsterResourcePUTContext(RexsterApplicationGraph rag,
 			UriInfo uriInfo, HttpServletRequest request,
 			JSONObject requestObject, ExtensionMethod extensionMethod) {
-		super(rag, uriInfo, request, requestObject, extensionMethod);
+		super(rag, uriInfo, request, requestObject, new JSONObject(), extensionMethod);
 	}
 
 }
