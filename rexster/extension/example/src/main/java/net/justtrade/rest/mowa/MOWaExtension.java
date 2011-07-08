@@ -13,9 +13,6 @@ import com.tinkerpop.rexster.extension.RexsterContext;
 
 import java.util.HashMap;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 /**
  * An extension that showcases the methods available to those who wish to extend Rexster.
  *
