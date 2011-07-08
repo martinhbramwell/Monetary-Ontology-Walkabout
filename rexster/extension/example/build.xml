@@ -7,6 +7,7 @@
 	<property name="GROOVY_HOME" value="${env.GROOVY_HOME}"/>
 	<property name="GROOVY_LIB" value="${GROOVY_HOME}/lib"/>
 	<property name="REXSTER_HOME" value="${env.REXSTER_HOME}"/>
+	<property name="REXSTER_DATA_DIR" value="${env.REXSTER_HOME}/data"/>
 	<property name="REXSTER_VERSION" value="rexster-0.5-SNAPSHOT"/>
 	<property name="REXSTER_SERVER" value="${REXSTER_HOME}/target/${REXSTER_VERSION}-standalone/"/>
 	<property name="REXSTER_LIB" value="${REXSTER_SERVER}lib"/>
@@ -104,6 +105,12 @@
 		<touch file="${resources}/config/rexster-restart.bat"/>
 		
 		<echo message=""/>
+		<echo message="---------[ Create directories where necessary ]---------"/>
+		<mkdir dir="${REXSTER_DATA_DIR}/tmp"/>		
+		<mkdir dir="${REXSTER_DATA_DIR}/archive"/>		
+				
+		
+		<echo message=""/>
 		<echo message="---------[ Copy myRexster.xml to rexster root ]---------"/>
 		<copy file="${resources}/config/myRexster.xml" todir="${REXSTER_HOME}" />
 		<copy file="${resources}/config/rexster-restart.bat" todir="${REXSTER_HOME}" />
@@ -167,12 +174,12 @@
 				
 		<echo message=""/>
 		<echo message="--------------------[ Stop ReXster ]--------------------"/>
-		<!--exec 	os="Windows XP" 
+		<exec 	os="Windows XP" 
 				dir="${REXSTER_HOME}" 
 				executable="cmd">
 			<arg value="/c"/>
 		    <arg value="rexster-stop.bat"/>
-		</exec-->
+		</exec>
 		
 	</target>
 
