@@ -4,3 +4,4 @@
 /rexster/extension/example/lib
 /rexster/extension/example/target
 /rexster/extension/example/src/main/resources/data/silly.json
+/rexster/extension/example/src/main/resources/config/myRexster.xml
