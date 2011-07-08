@@ -34,6 +34,35 @@
 	<property name="resources" location="src/main/resources"/>
 	<property name="target" location="target"/>
 	
+	<condition property="isUnix">
+		<and>
+			<os family="unix"/>
+		</and>
+	</condition>
+	
+	<condition property="isWin">
+		<and>
+			<os family="windows"/>
+		</and>
+	</condition>
+	
+	<target name="prep4unix" description="Make the unix versions of some file available" if="isUnix">
+		
+		<echo message="Running on ${os.name}"/>
+		<copy file="${resources}/config/myRexster.xml.unx" tofile="${resources}/config/myRexster.xml"/>
+		
+	</target>
+	
+	<target name="prep4win" description="Make the windows versions of some file available" if="isWin">
+		
+		<echo message="Running on ${os.name}"/>
+		<copy file="${resources}/config/myRexster.xml.win" tofile="${resources}/config/myRexster.xml"/>
+		
+	</target>
+	
+	
+	
+	
 	<path id="support.classes">
 	    <pathelement location="${GROOVY_LIB}/groovy-1.8.0.jar" />
 	    <pathelement location="${GROOVY_LIB}/asm-3.2.jar" />
@@ -58,7 +87,7 @@
 	</target>
 	
 
-	<target name="dist" description="generate the distribution" >
+	<target name="dist" description="generate the distribution"  depends="prep4unix,prep4win">
 		
 		<echo message=""/>
 		<echo message="--------------------[ Stop ReXster ]--------------------"/>		
