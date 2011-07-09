@@ -33,10 +33,19 @@
                     <allow>tp:gremlin</allow>
 					<allow>tp-sample:*</allow>
 					<allow>mowa:stevens</allow>
+					<allow>mowa:stevens-family</allow>
                 </allows>
     			<extension>
 				  <namespace>mowa</namespace>
 				  <name>stevens</name>
+				  <configuration>
+					<location-of-graph-archive>E:\programs\com\tinkerpop\rexster\data\archive</location-of-graph-archive>
+					<location-of-temp-files>E:\programs\com\tinkerpop\rexster\data\tmp</location-of-temp-files>
+				  </configuration>
+				</extension>
+    			<extension>
+				  <namespace>mowa</namespace>
+				  <name>stevens-family</name>
 				  <configuration>
 					<location-of-graph-archive>E:\programs\com\tinkerpop\rexster\data\archive</location-of-graph-archive>
 					<location-of-temp-files>E:\programs\com\tinkerpop\rexster\data\tmp</location-of-temp-files>

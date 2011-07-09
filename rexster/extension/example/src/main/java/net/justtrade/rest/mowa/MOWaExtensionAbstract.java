@@ -18,6 +18,27 @@ public abstract class MOWaExtensionAbstract extends AbstractRexsterExtension {
     	return EXTENSION_NAMESPACE;
     }
 
+    /**
+     * This method helps the root methods by wrapping the output of the toString of the graph element
+     * in JSON to be returned in the ExtensionResponse.  ExtensionResponse has numerous helper methods
+     * to make it easy to build the response object.
+     *
+     * Outputted JSON (if the object is a graph) will look like this:
+     *
+     * {"output":"tinkergraph[vertices:6 edges:6]","version":"0.3-SNAPSHOT","queryTime":38.02189}
+     *
+     * Note the "version" and "queryTime" properties within the JSON.  Rexster will attempt to automatically
+     * add these items when it understands the output to be JSON.  It is possible to override this default
+     * behavior by setting the tryIncludeRexsterAttributes on the @Extension definition to false.
+     */
+    protected ExtensionResponse toStringIt(Object obj, String path) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("output", obj.toString());
+        map.put("workCameFrom", path);
+        return ExtensionResponse.ok(map);
+    }
+    
+    
 	protected ExtensionResponse toStringSimple(Object obj, String path) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("output", obj.toString());

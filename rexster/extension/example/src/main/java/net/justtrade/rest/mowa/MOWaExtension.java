@@ -11,8 +11,6 @@ import com.tinkerpop.rexster.extension.ExtensionDescriptor;
 import com.tinkerpop.rexster.extension.ExtensionResponse;
 import com.tinkerpop.rexster.extension.RexsterContext;
 
-import java.util.HashMap;
-
 /**
  * An extension that showcases the methods available to those who wish to extend Rexster.
  *
@@ -73,26 +71,6 @@ public class MOWaExtension extends MOWaExtensionAbstract {
     }
 
     /**
-     * This method helps the root methods by wrapping the output of the toString of the graph element
-     * in JSON to be returned in the ExtensionResponse.  ExtensionResponse has numerous helper methods
-     * to make it easy to build the response object.
-     *
-     * Outputted JSON (if the object is a graph) will look like this:
-     *
-     * {"output":"tinkergraph[vertices:6 edges:6]","version":"0.3-SNAPSHOT","queryTime":38.02189}
-     *
-     * Note the "version" and "queryTime" properties within the JSON.  Rexster will attempt to automatically
-     * add these items when it understands the output to be JSON.  It is possible to override this default
-     * behavior by setting the tryIncludeRexsterAttributes on the @Extension definition to false.
-     */
-    private ExtensionResponse toStringIt(Object obj, String path) {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("output", obj.toString());
-        map.put("workCameFrom", path);
-        return ExtensionResponse.ok(map);
-    }
-    
-    /**
      * By adding the @RexsterContext attribute to the "graph" parameter, the graph requested gets
      * automatically injected into the extension.  Therefore, when the following URI is requested:
      *
@@ -100,7 +78,7 @@ public class MOWaExtension extends MOWaExtensionAbstract {
      *
      * the graph called "graphname" will be pushed into this method.
      */
-    
+/*    
     @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.GET)
 	@ExtensionDescriptor(description = "Returns the options available for the 'Stevens' family ontology, with HttpMethod.GET.")
     public ExtensionResponse getBasePath(@RexsterContext Graph graph) {
@@ -109,13 +87,14 @@ public class MOWaExtension extends MOWaExtensionAbstract {
 		
         return toStringIt(graph, "GET graph's root");
     }
+*/
 
 //    @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.POST)
 //	@ExtensionDescriptor(description = "Returns the options available for the 'Stevens' family ontology, with HttpMethod.POST.")
 //    public ExtensionResponse doPostRootWork(@RexsterContext Graph graph) {
 //        return toStringIt(graph, "POST root work");
 //    }
-
+/*
 	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.POST)
 	@ExtensionDescriptor(description = "POST a multipart file containg the 'Stevens' family ontology.")
 	public ExtensionResponse postBasePath (@RexsterContext RexsterResourceContext context)
@@ -127,14 +106,14 @@ public class MOWaExtension extends MOWaExtensionAbstract {
 		return manager.post(context);
 
 	}
-    
+*/    
     
 //  @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.PUT)
 //	@ExtensionDescriptor(description = "Returns the options available for the 'Stevens' family ontology, with HttpMethod.PUT.")
 //  public ExtensionResponse doPutRootWork(@RexsterContext Graph graph) {
 //      return toStringIt(graph, "PUT root work");
 //  }
-
+/*
 	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.PUT)
 	@ExtensionDescriptor(description = "PUT a single file towards the 'Stevens' family ontology.")
 	public ExtensionResponse putBasePath (@RexsterContext RexsterResourceContext context)
@@ -146,20 +125,7 @@ public class MOWaExtension extends MOWaExtensionAbstract {
 		return manager.put(context);
 
 	}
-
-    
-    
-	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.DELETE)
-	@ExtensionDescriptor(description = "DELETE all the 'Stevens' family ontology.")
-	public ExtensionResponse deleteBasePath (@RexsterContext RexsterResourceContext context)
-	{
-		final String sMETHOD = CLASS_NAME + "putBasePath(RexsterResourceContext) --> ";
-		System.out.println(sMETHOD + "Base path :: " + basePath);
-				
-		BasePathManager manager = new BasePathManager(); 
-		return manager.delete(context);
-	}
-
+*/
     
 
 

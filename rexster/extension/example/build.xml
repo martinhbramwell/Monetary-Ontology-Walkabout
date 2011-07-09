@@ -91,7 +91,7 @@
 	<target name="dist" description="generate the distribution"  depends="prep4unix,prep4win">
 		
 		<echo message=""/>
-		<echo message="--------------------[ Stop ReXster ]--------------------"/>		
+		<echo message="-=-=-=-=-=-=-=-=-=-=[ Stop ReXster ]-=-=-=-=-=-=-=-=-=-="/>		
 		<exec 	os="Windows XP" 
 				dir="${REXSTER_HOME}" 
 				executable="cmd">
@@ -100,43 +100,43 @@
 		</exec>
 		
 		<echo message=""/>
-		<echo message="--[ Make sure our config files are newer than theirs ]--"/>
+		<echo message="-=[ Make sure our config files are newer than theirs ]-="/>
 		<touch file="${resources}/config/myRexster.xml"/>
 		<touch file="${resources}/config/rexster-restart.bat"/>
 		
 		<echo message=""/>
-		<echo message="---------[ Create directories where necessary ]---------"/>
+		<echo message="-=-=-=-=-[ Create directories where necessary ]-=-=-=-=-"/>
 		<mkdir dir="${REXSTER_DATA_DIR}/tmp"/>		
 		<mkdir dir="${REXSTER_DATA_DIR}/archive"/>		
 				
 		
 		<echo message=""/>
-		<echo message="---------[ Copy myRexster.xml to rexster root ]---------"/>
+		<echo message="-=-=-=-=-[ Copy myRexster.xml to rexster root ]-=-=-=-=-"/>
 		<copy file="${resources}/config/myRexster.xml" todir="${REXSTER_HOME}" />
 		<copy file="${resources}/config/rexster-restart.bat" todir="${REXSTER_HOME}" />
 		
 		<echo message=""/>
-		<echo message="--------[ Copy fileUpload jar to their lib dir ]--------"/>
+		<echo message="-=-=-=-=[ Copy fileUpload jar to their lib dir ]-=-=-=-="/>
 		<copy file="${FILEUPLOAD_JAR_DIR}/commons-fileupload-${FILEUPLOAD_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 		
 		<echo message=""/>
-		<echo message="-----------[ Copy Jena jar to their lib dir ]-----------"/>
+		<echo message="-=-=-=-=-=-[ Copy Jena jar to their lib dir ]-=-=-=-=-=-"/>
 		<copy file="${JENA_JAR_DIR}/${JENA_JAR}-${JENA_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 		
 		<echo message=""/>
-		<echo message="---------[ Copy Jena IRI jar to their lib dir ]---------"/>
+		<echo message="-=-=-=-=-[ Copy Jena IRI jar to their lib dir ]-=-=-=-=-"/>
 		<copy file="${JENA_IRI_JAR_DIR}/${JENA_IRI_JAR}-${JENA_IRI_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 		
 		<echo message=""/>
-		<echo message="--------[ Copy IBM ICU4j jar to their lib dir ]---------"/>
+		<echo message="-=-=-=-=[ Copy IBM ICU4j jar to their lib dir ]-=-=-=-=-"/>
 		<copy file="${ICU4J_JAR_DIR}/${ICU4J_JAR}-${ICU4J_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 		
 		<echo message=""/>
-		<echo message="----------[ Copy XERCES jar to their lib dir ]----------"/>
+		<echo message="-=-=-=-=-=[ Copy XERCES jar to their lib dir ]-=-=-=-=-="/>
 		<copy file="${XERCES_JAR_DIR}/${XERCES_JAR}-${XERCES_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 
 		<echo message=""/>
-		<echo message="-----[ Copy our jar to their extensions directory ]-----"/>
+		<echo message="-=-=-[ Copy our jar to their extensions directory ]-=-=-"/>
 		<copy file="${target}/mowa-study-0.1-SNAPSHOT.jar" todir="${REXSTER_EXT}" />
 		
 		<echo message="Wait 30 seconds for server to die."/>
@@ -146,11 +146,11 @@
 		<echo message="Finished waiting.."/>
 		
 		<echo message=""/>
-		<echo message="-----------[ Delete our database directory ]------------"/>
+		<echo message="-=-=-=-=-=-[ Delete our database directory ]-=-=-=-=-=-="/>
 		<delete dir="${REXSTER_HOME}/data/mowa-graph" quiet="true"/>
 		
-		<echo message=""/>
-		<echo message="------------------[ Restart reXster ]-------------------"/>
+		<!-- echo message=""/>
+		<echo message="-=-=-=-=-=-=-=-=-=[ Restart reXster ]-=-=-=-=-=-=-=-=-=-"/>
 		<sleep seconds="4"/>
 		<exec 	os="Windows XP" 
 				dir="${REXSTER_HOME}" 
@@ -165,7 +165,7 @@
 		</waitfor>
 				
 		<echo message=""/>
-		<echo message="-----------------[ Check functioning ]------------------"/>
+		<echo message="-=-=-=-=-=-=-=-=-[ Check functioning ]-=-=-=-=-=-=-=-=-="/>
 		<exec executable="curl">
 			<arg value="-sX"/>
 			<arg value="GET"/>
@@ -173,13 +173,13 @@
 		</exec>
 				
 		<echo message=""/>
-		<echo message="--------------------[ Stop ReXster ]--------------------"/>
+		<echo message="-=-=-=-=-=-=-=-=-=-=[ Stop ReXster ]-=-=-=-=-=-=-=-=-=-="/>
 		<exec 	os="Windows XP" 
 				dir="${REXSTER_HOME}" 
 				executable="cmd">
 			<arg value="/c"/>
 		    <arg value="rexster-stop.bat"/>
-		</exec>
+		</exec -->
 		
 	</target>
 

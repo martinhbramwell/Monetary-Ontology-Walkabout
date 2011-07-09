@@ -1,5 +1,6 @@
 package net.justtrade.rest.mowa;
 
+import com.tinkerpop.blueprints.pgm.Graph;
 import com.tinkerpop.rexster.RexsterResourceContext;
 import com.tinkerpop.rexster.extension.ExtensionNaming;
 import com.tinkerpop.rexster.extension.ExtensionDefinition;
@@ -23,7 +24,7 @@ import com.tinkerpop.rexster.extension.ExtensionResponse;
 @ExtensionNaming(name = MOWaRootExtension.EXTENSION_NAME, namespace = MOWaExtensionAbstract.EXTENSION_NAMESPACE)
 public class MOWaRootExtension extends MOWaExtensionAbstract {
 	
-    public static final String EXTENSION_NAME = "stevens";
+    public static final String EXTENSION_NAME = "stevens-family";
     public String getExtensionName() {return EXTENSION_NAME;}	
 	public static final String basePath = EXTENSION_NAMESPACE + "/" + EXTENSION_NAME;
 	private static final String CLASS_NAME = "\n" + "MOWaRootExtension" + ".";
@@ -40,39 +41,21 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 	 * , method = HttpMethod.GET
 	 */
 
-	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.GET)
+    @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.GET)
 	@ExtensionDescriptor(description = "Returns the options available for the 'Stevens' family ontology, with HttpMethod.GET.")
-	public ExtensionResponse getBasePath (@RexsterContext RexsterResourceContext context)
-	{
-		final String sMETHOD = CLASS_NAME + "getBasePath() --> ";
+    public ExtensionResponse getBasePath(@RexsterContext Graph graph) {
+		final String sMETHOD = CLASS_NAME + "getBasePath(Graph) --> ";
 		System.out.println(sMETHOD + "Base path :: " + basePath);
 		
-		return this.toStringSimple(this, basePath);
+        return toStringIt(graph, "GET graph's root");
+    }
 
-//		HttpServletRequest httpRequest = context.getRequest();
-//		String httpMethod = httpRequest.getMethod();
-//		
-//		BasePathManager manager = new BasePathManager(); 
-//		if (ServletFileUpload.isMultipartContent(httpRequest)) {
-//			return manager.basePath(ContextTransformer.transformContextPUT(context));
-//		} else {
-//			switch (HTTPMethod.convert(httpMethod)) {
-//			case HTTPMethod.POST :
-//				return manager.basePath(ContextTransformer.transformContextPOST(context));
-//			case HTTPMethod.GET :
-//				return manager.basePath(ContextTransformer.transformContextGET(context));
-//			default:
-//				return ExtensionResponse.error(new UnsupportedMethodException(httpMethod));
-//			}
-//		}
-	}
-    
     
 	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.PUT)
 	@ExtensionDescriptor(description = "PUT a single file towards the 'Stevens' family ontology.")
 	public ExtensionResponse putBasePath (@RexsterContext RexsterResourceContext context)
 	{
-		final String sMETHOD = CLASS_NAME + "putBasePath() --> ";
+		final String sMETHOD = CLASS_NAME + "putBasePath(RexsterResourceContext) --> ";
 		System.out.println(sMETHOD + "Base path :: " + basePath);
 		
 		BasePathManager manager = new BasePathManager(); 
@@ -85,7 +68,7 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 	@ExtensionDescriptor(description = "POST a multipart file containg the 'Stevens' family ontology.")
 	public ExtensionResponse postBasePath (@RexsterContext RexsterResourceContext context)
 	{
-		final String sMETHOD = CLASS_NAME + "postBasePath() --> ";
+		final String sMETHOD = CLASS_NAME + "postBasePath(RexsterResourceContext) --> ";
 		System.out.println(sMETHOD + "Base path :: " + basePath);
 		
 		BasePathManager manager = new BasePathManager(); 
@@ -93,5 +76,18 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 
 	}
     
+    
+    
+	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.DELETE)
+	@ExtensionDescriptor(description = "DELETE all the 'Stevens' family ontology.")
+	public ExtensionResponse deleteBasePath (@RexsterContext RexsterResourceContext context)
+	{
+		final String sMETHOD = CLASS_NAME + "putBasePath(RexsterResourceContext) --> ";
+		System.out.println(sMETHOD + "Base path :: " + basePath);
+				
+		BasePathManager manager = new BasePathManager(); 
+		return manager.delete(context);
+	}
+
     
 }
