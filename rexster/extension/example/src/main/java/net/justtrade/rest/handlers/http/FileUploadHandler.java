@@ -24,7 +24,7 @@ import com.tinkerpop.rexster.extension.ExtensionResponse;
 
 public class FileUploadHandler {
 
-	public static final String CLASS_NAME = "\n" + "UploadHandler" + ".";
+	public static final String CLASS_NAME = "\n" + "FileUploadHandler" + ".";
 
 	/*
 	 * This method leverages the capabilities of the the Apache project org.apache.commons.fileupload

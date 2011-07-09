@@ -59,6 +59,9 @@ public class UploadHandler {
 			System.out.println(sMETHOD + "* * * Invalid JSON * * * \n" + jsonex.getLocalizedMessage());
 		} catch (FileWriteException ioex) {
 			System.out.println(sMETHOD + "* * * File Write Failure * * * \n" + ioex.getLocalizedMessage());
+			System.out.println(sMETHOD + "Does the directory " + _names.get(TEMP_FILES) + " exist?\n" + ioex.getLocalizedMessage());
+			System.out.println(sMETHOD + "Does the directory " + _names.get(GRAPH_ARCHIVE) + " exist?\n" + ioex.getLocalizedMessage());
+
 		} catch (FileUploadException fuex) {
 			System.out.println(sMETHOD + "* * * File Upload Failure * * * \n" + fuex.getLocalizedMessage());
 		} catch (Exception ex) {

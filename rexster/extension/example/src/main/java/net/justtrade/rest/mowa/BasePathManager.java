@@ -7,13 +7,12 @@ import java.util.Map;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import net.justtrade.rest.handlers.context.RexsterResourceGETContext;
-import net.justtrade.rest.handlers.http.UploadHandler;
-
 import com.tinkerpop.rexster.RexsterApplicationGraph;
 import com.tinkerpop.rexster.RexsterResourceContext;
 import com.tinkerpop.rexster.extension.ExtensionConfiguration;
 import com.tinkerpop.rexster.extension.ExtensionResponse;
+
+import net.justtrade.rest.handlers.http.UploadHandler;;
 
 public class BasePathManager extends MOWaExtension {
 
@@ -85,7 +84,7 @@ public class BasePathManager extends MOWaExtension {
 		}
 	}
 
-	public ExtensionResponse basePath (RexsterResourceGETContext context)
+	public ExtensionResponse basePath (RexsterResourceContext context)
 	{
 		final String sMETHOD = CLASS_NAME + "basePath(RexsterResourceGETContext) --> ";
 		final String REST_PATH = "";

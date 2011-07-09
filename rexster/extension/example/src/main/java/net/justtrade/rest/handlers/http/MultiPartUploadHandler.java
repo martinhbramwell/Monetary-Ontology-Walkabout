@@ -23,7 +23,7 @@ import net.justtrade.rest.util.FileWriteException;
 
 public class MultiPartUploadHandler extends UploadHandler {
 
-	public static final String CLASS_NAME = "\n" + "UploadHandler" + ".";
+	public static final String CLASS_NAME = "\n" + "MultiPartUploadHandler" + ".";
 	
 	/*
 	 * This method leverages the capabilities of the the Apache project org.apache.commons.fileupload
@@ -117,7 +117,7 @@ public class MultiPartUploadHandler extends UploadHandler {
 	
 	protected static String archiveTripleFile (FileItem item, String pathArchive) throws FileWriteException
 	{
-		final String sMETHOD = CLASS_NAME + "archiveTripleFile(FileItem, ExtensionConfiguration) --> ";
+		final String sMETHOD = CLASS_NAME + "archiveTripleFile(FileItem, String) --> ";
 
 		String fileName = item.getName();
 

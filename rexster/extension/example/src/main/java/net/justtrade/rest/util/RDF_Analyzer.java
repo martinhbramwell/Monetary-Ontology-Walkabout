@@ -7,7 +7,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 /**
- * RDF_Analyzer is a debuggiong tool. It helps figure out Jena's 
+ * RDF_Analyzer is a debugging tool. It helps figure out Jena's 
  * terminology of Nodes that may be specialized as one or more of :
  *  - Blank
  *  - Concrete
