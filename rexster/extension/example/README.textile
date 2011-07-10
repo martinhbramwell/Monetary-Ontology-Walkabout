@@ -2,39 +2,88 @@ h1. OWL File Loader Example
 
 The example demonstrates how a Web Ontology Language (OWL) file _could_ be loaded into a Blueprints managed database through Rexster's REST interface.
 
-It takes two key aspects of the provided ontology: persons & family relationships, and provides direct REST style access to them.  This follows the "HATEAOS":http://en.wikipedia.org/wiki/HATEOAS pattern of providing callers with URLs that guide them through to access further related information sites &/or pages.
+It takes two key aspects of the provided ontology: persons & family relationships, and provides direct REST style access to them.  This follows the "HATEAOS":http://en.wikipedia.org/wiki/HATEOAS pattern of providing callers with URLs that guide them through to access further related information sites &/or pages.  (*NOTE :* As of early July 2011, this is till not complete - I got side tracked.)
+
+*_Special thanks to Sujit Pal for solving most of the tricky bits more than two years ago!_*
+See "Using Neo4J to load and query OWL ontologies":http://sujitpal.blogspot.com/2009/05/using-neo4j-to-load-and-query-owl.html
 
 
-h3. There are some *important notes* about it, though:
+h3. There are some *important notes* about this example :
 
 * This is _uncontrolled_ ontology storage.  You can use the REST interface to add further data and expect that the ontology's rules will be respected.  However, data loaded by other means, such as Gremlin, will *not* be constrained by ontological rules.
 * This was not done by an OWL expert!  It is really no more than an initial experiment while learning OWL, Jena and Tinkerpop simultaneously.
 * File loading is *NOT* idempotent.  There will be completely inappropriate repetitions of items if you load a file more than once.
-* Rexster extensions weren't designed to adhere to the HTTP Methods standards, although this may change in the future ("@ExtensionDefinition should include HTTP Method differentiation":https://github.com/tinkerpop/rexster/issues/106), so, as you will see, it is necessary to have a mess of    @if ... then ... else@    statements in each method so as to refine the request.
+* The build scripts entirely wipe out your database so as to start afresh each time, so don't go mixing it up with your production web site or something equally costly.
+
 
 h3. Here's what you *do* get:
 
-* A more complete example of how Rexster Extensions can be used.
-* Complete rebuild and retest of your Extension with a single MS-DOS command line:  @mvn clean package && test@ (and that can be reduced to   @mvn -o package && test@  much of the time.)
+* A more complete example of how Rexster Extensions can be used, than in the Kibbles
+* Complete rebuild and retest of your Extension with a single command line:  @mvn clean package -DdoDist && test@ (and that can be reduced to   @mvn -o package -DdoDist && test@  much of the time.)
 * An Eclipse & Maven compatible development environment for your Extension.
-* Unit testing done exclusively with "curl".  This may seems like underkill, but if you take the view that REST should consist of many small, self-sufficient methods then, for most things jUnit testing internally, ought not to be necessary.
+* Unit testing done exclusively with "curl".  This may seems like underkill, but if you take the view that REST should consist of many small, self-sufficient methods then, for most things jUnit testing internally ought not to be necessary.
+* _Furthermore_, if you follow the wiki here : "Setting up a Rexster Extension continuous integration and test server":https://github.com/martinhbramwell/RexExt_ci/wiki, you have a complete, detailed set of instructions for setting up a Virtual Private Server preconfigured with Jenkins/Hudson continuous integration and testing of your extension.  The testing follows the Functional Integration Testing (FIT) methodology using "Fitnesse":http://www.fitnesse.org/. The Fitnesse pages can be pulled out of there and used in a local copy of Fitnesse easily enough.
 
 h2. Build and Execution:
 
 h3. Deploy
 
-* Deploying a Rexster Extension involves several steps, all of which are handled by @mvn package@ which in turn calls an ant @build.xml@:
-** Stopping Rexster
-** Copying our rexster.xml to Rexster's root
-** Copying our specially configured Rexster's startup script to Rexster's root
-** Copying third-party jars to Rexster's @lib@ directory
-** Making a jar of our code of our Extension
-** Copying our jar to Rexster's @ext@ directory
-** Call our Rexster restart script.
+Deploying a Rexster Extension involves several steps, all of which are handled by @mvn package -DdoDist@ which in turn calls an ant @build.xml@:
+* Stopping Rexster
+* Copying our rexster.xml to Rexster's root
+* Copying our specially configured Rexster's startup script to Rexster's root
+* Copying third-party jars to Rexster's @lib@ directory
+* Making a jar of the code of our Extension
+* Copying our jar to Rexster's @ext@ directory
+* MURDER the existing database
+* Call our Rexster restart script.
 
 h3. Execution results
 
-You'll find calls to two methods in a class called @net.justtrade.rest.util.RDF_Analyzer@.  These two have nothing to do with the Extension, itself.  Jena's various types of Nodes in RDF triples.  This class groups,  and dumps to Rexster's console, the various types to assist in deciding how best to handle them.
+You'll find calls to two methods in a class called @net.justtrade.rest.util.RDF_Analyzer@.  These two have nothing to do with the Extension itself.  Jena's records the various types of Nodes in RDF triples, and isn't easy to sort through what it did with your OWL file.  This class categorizes the triples by Node type and dumps them to Rexster's console.  It highlights the various combinations to assist in deciding how best to handle them from a REST interface, for example : <code>
+
+With key '110000101000000011' we got these triples :
+Subject   : 'Blank,Concrete'.
+Predicate : 'Concrete,URI'.
+Object    : 'Blank,Concrete'.
+ - Triple '26f442ca:13114c99189:-7ffe @rdf:rest 26f442ca:13114c99189:-7ffd'.
+ - Triple '26f442ca:13114c99189:-7fff @owl:intersectionOf 26f442ca:13114c99189:-7ffe'.
+ 
+With key '10100000101000001010' we got these triples :
+Subject   : 'Concrete,URI'.
+Predicate : 'Concrete,URI'.
+Object    : 'Concrete,URI'.
+ - Triple 'http://grandpa.mowa.justtrade.net @rdf:type owl:Ontology'.
+ - Triple 'http://grandpa.mowa.justtrade.net#NotRecorded @rdf:type owl:Class'.
+ - Triple 'http://grandpa.mowa.justtrade.net#NotRecorded @rdfs:subClassOf http://grandpa.mowa.justtrade.net#Person'.
+ - Triple 'http://grandpa.mowa.justtrade.net#Person @rdf:type owl:Class'.
+ - Triple 'http://grandpa.mowa.justtrade.net#StepMother @rdf:type owl:Class'.
+ - Triple 'http://grandpa.mowa.justtrade.net#StepParent @rdf:type owl:Class'.
+ - Triple 'http://grandpa.mowa.justtrade.net#StepParent @rdfs:subClassOf http://grandpa.mowa.justtrade.net#Person'.
+ - Triple 'http://grandpa.mowa.justtrade.net#Woman @rdf:type owl:Class'.
+ 
+With key '10100000101000000110' we got these triples :
+Subject   : 'Concrete,URI'.
+Predicate : 'Concrete,URI'.
+Object    : 'Concrete,Literal'.
+ - Triple 'http://test#PersonA @http://test#litProperty "Bob"'.
+ - Triple 'http://test#PersonB @http://test#litProperty "Tom"'.
+ 
+With key '10100000101000000011' we got these triples :
+Subject   : 'Concrete,URI'.
+Predicate : 'Concrete,URI'.
+Object    : 'Blank,Concrete'.
+ - Triple 'http://grandpa.mowa.justtrade.net#StepMother @owl:equivalentClass 26f442ca:13114c99189:-7fff'.
+ 
+With key '110000101000001010' we got these triples :
+Subject   : 'Blank,Concrete'.
+Predicate : 'Concrete,URI'.
+Object    : 'Concrete,URI'.
+ - Triple '26f442ca:13114c99189:-7ffd @rdf:first http://grandpa.mowa.justtrade.net#Woman'.
+ - Triple '26f442ca:13114c99189:-7ffd @rdf:rest rdf:nil'.
+ - Triple '26f442ca:13114c99189:-7ffe @rdf:first http://grandpa.mowa.justtrade.net#StepParent'.
+ - Triple '26f442ca:13114c99189:-7fff @rdf:type owl:Class'.</code>
+
 
 
 
