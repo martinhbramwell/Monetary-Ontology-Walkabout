@@ -1,4 +1,4 @@
-h1. Using Tinkerpop to load and query OWL ontologies
+h1. Using Tinkerpop to Load and Query OWL Ontologies
 
 The example demonstrates how a Web Ontology Language (OWL) file _could_ be loaded into a Blueprints managed database through Rexster's REST interface.
 
