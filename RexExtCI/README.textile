@@ -1,6 +1,0 @@
-h1. Rexster Extension Continuous Integration
-
-h2. Introduction
-
-This package keeps track of all the stuff used to configure the Jenkins Continuous Integration server for developing and integrating Rexster Extensions
-
