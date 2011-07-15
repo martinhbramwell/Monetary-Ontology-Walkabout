@@ -1,5 +1,9 @@
 package net.justtrade.rest.util;
 
+/**
+* 
+* @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
+*/
 public class FileWriteException extends Exception {
 
 	/**
@@ -8,7 +12,7 @@ public class FileWriteException extends Exception {
 	private static final long serialVersionUID = 8058564244426520149L;
 
 	public FileWriteException() {
-		// TODO Auto-generated constructor stub
+		super("Problem writing to file.");
 	}
 
 	public FileWriteException(String message) {
@@ -17,7 +21,6 @@ public class FileWriteException extends Exception {
 
 	public FileWriteException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public FileWriteException(String message, Throwable cause) {

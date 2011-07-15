@@ -22,7 +22,7 @@ h3. Here's what you *do* get:
 * Complete rebuild and retest of your Extension with a single command line:  @mvn clean package -DdoDist && test@ (and that can be reduced to   @mvn -o package -DdoDist && test@  much of the time.)
 * An Eclipse & Maven compatible development environment for your Extension.
 * Unit testing done exclusively with "curl".  This may seems like underkill, but if you take the view that REST should consist of many small, self-sufficient methods then, for most things jUnit testing internally ought not to be necessary.
-* _Furthermore_, if you follow the wiki here : "Setting up a Rexster Extension continuous integration and test server":https://github.com/martinhbramwell/RexExt_ci/wiki, you have a complete, detailed set of instructions for setting up a Virtual Private Server preconfigured with Jenkins/Hudson continuous integration and testing of your extension.  The testing follows the Functional Integration Testing (FIT) methodology using "Fitnesse":http://www.fitnesse.org/. The Fitnesse pages can be pulled out of there and used in a local copy of Fitnesse easily enough.
+* _Furthermore_ if you follow the wiki here : "Setting up a Rexster Extension continuous integration and test server":https://github.com/martinhbramwell/RexExt_ci/wiki, you have a complete, detailed set of instructions for setting up a Virtual Private Server preconfigured with Jenkins/Hudson continuous integration and testing of your extension.  The testing follows the Functional Integration Testing (FIT) methodology using "Fitnesse":http://www.fitnesse.org/. The Fitnesse pages can be pulled out of there and used in a local copy of Fitnesse easily enough.
 
 h2. Build and Execution:
 

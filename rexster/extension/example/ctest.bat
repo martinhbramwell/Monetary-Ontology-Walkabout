@@ -1,36 +1,102 @@
 @echo off
+echo .
+echo --------------------------------------------------
+echo ----------------[ Set Parameters ]----------------
+echo --------------------------------------------------
+echo .
 set VERBOSE=-S
-echo GET server root
+set BASEDIR=%~dp0%APARM%
+echo    Base dir : %BASEDIR%
+rem set REXSTERDIR=E:\programs\com\tinkerpop\rexster\target\rexster-0.4-SNAPSHOT-standalone\bin
+set REXSTERDIR=E:\programs\com\tinkerpop\rexster\
+echo Rexster dir : %REXSTERDIR%
+echo .
+echo --------------------------------------------------
+echo ---------------[ Restart Rexster ]---------------
+echo --------------------------------------------------
+echo .
+echo start /I "Restarting Rexster" /D %REXSTERDIR% rexster-restart.bat  -configuration myRexster.xml
+start /I "Restarting Rexster" /D %REXSTERDIR% rexster-restart.bat  -configuration myRexster.xml
+echo .
+echo --------------------------------------------------
+echo --------[ Wait 8 secs for full start up ]--------
+echo --------------------------------------------------
+echo .
+PING 1.1.1.1 -n 1 -w 8000 >NUL
+echo .
+echo .
+echo ------------------------
+echo --[ GET server root. ]--
+echo ------------------------
+echo .
 curl %VERBOSE% http://localhost:8182/neo4jsample | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo.
-echo GET graph root
-curl %VERBOSE% http://localhost:8182/neo4jsample/mowa/stevens-family | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo .
+echo ------------------------
+echo --[ GET graph root. ]---
+echo ------------------------
+echo .
+curl %VERBOSE% http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo.
-echo POST graph root
-curl %VERBOSE% -d "ID=5&Type=Pack&Name=Deck of Cards" http://localhost:8182/neo4jsample/mowa/stevens-family | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo .
+echo ------------------------
+echo --[ POST graph root. ]--
+echo ------------------------
+echo .
+curl %VERBOSE% -d "ID=5&Type=Pack&Name=Deck of Cards" http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo.
-echo GET persons
+echo .
+echo ------------------------
+echo ----[ GET persons. ]----
+echo ------------------------
+echo .
 curl %VERBOSE% http://localhost:8182/neo4jsample/mowa/stevens/persons | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo.
-echo POST persons
+echo .
+echo ------------------------
+echo ---[ POST persons. ]----
+echo ------------------------
+echo .
 curl %VERBOSE% -d "ID=5&Type=Pack&Name=Deck of Cards" http://localhost:8182/neo4jsample/mowa/stevens/persons | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo.
-echo GET relationships
+echo .
+echo ------------------------
+echo -[ GET relationships. ]-
+echo ------------------------
+echo .
 curl %VERBOSE% http://localhost:8182/neo4jsample/mowa/stevens/relationships | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo.
-echo POST relationships
+echo .
+echo ------------------------
+echo [ POST relationships. ]-
+echo ------------------------
+echo .
 curl %VERBOSE%d "ID=5&Type=Pack&Name=Deck of Cards" http://localhost:8182/neo4jsample/mowa/stevens/relationships | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo . . . . . . 
 echo.
-echo PUT small file
-curl %VERBOSE% -T .\src\main\resources\data\theStevens.owl  -H "Content-Type: text/plain"  http://localhost:8182/neo4jsample/mowa/stevens-family | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo .
+echo ------------------------
+echo --[ PUT small file. ]---
+echo ------------------------
+echo .
+curl %VERBOSE% -T .\src\main\resources\data\theStevens.owl  -H "Content-Type: text/plain"  http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo . . . . . . 
 echo.
-echo PUT big file
-curl %VERBOSE% -T .\src\main\resources\data\family.swrl.owl  -H "Content-Type: text/plain"  http://localhost:8182/neo4jsample/mowa/stevens-family | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo .
+echo ------------------------
+rem echo ---[ PUT big file. ]----
+echo ------------------------
+echo .
+rem curl %VERBOSE% -T .\src\main\resources\data\family.swrl.owl  -H "Content-Type: text/plain"  http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo . . . . . . 
 echo.
-echo POST two big files
-curl %VERBOSE% -F "Family SWRL=@.\src\main\resources\data\family.swrl.owl"  -F "Stevens Family=@.\src\main\resources\data\TheStevens.owl"  http://localhost:8182/neo4jsample/mowa/stevens-family | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo .
+echo ------------------------
+rem echo [ POST two big files. ]-
+echo ------------------------
+echo .
+rem curl %VERBOSE% -F "Family SWRL=@.\src\main\resources\data\family.swrl.owl"  -F "Stevens Family=@.\src\main\resources\data\TheStevens.owl"  http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo . . . . . . 
+echo.
 
  
