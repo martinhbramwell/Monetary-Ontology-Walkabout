@@ -1,5 +1,10 @@
 package net.justtrade.rest.util;
 
+import net.justtrade.rest.mowa.MOWaExtension;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
 * Some generic global utilities and a main method for testing them
 * 
@@ -7,6 +12,8 @@ package net.justtrade.rest.util;
 */
 public class Util {
 
+	private static final Logger logger = LoggerFactory.getLogger(MOWaExtension.class);
+	
 	
 	/**
 	 * Main for testing.
@@ -19,19 +26,19 @@ public class Util {
 		long tempVal = -1;
 		
 		tempVal = replaceByteX(65535, 9, 1);
-		System.out.println("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
+		logger.debug("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
 		
 		tempVal = replaceByteX(65535, 6, 2);
-		System.out.println("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
+		logger.debug("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
 		
 		tempVal = getByteX(7, 0);
-		System.out.println("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
+		logger.debug("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
 		
 		tempVal = getByteX(65439, 1);
-		System.out.println("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
+		logger.debug("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
 		
 		tempVal = getByteX(63231, 2);
-		System.out.println("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
+		logger.debug("Result : " + tempVal + " or " + Long.toBinaryString(tempVal));
 		
 		
 
