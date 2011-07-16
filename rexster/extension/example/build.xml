@@ -31,6 +31,17 @@
 	<property name="XERCES_JAR" value="xercesImpl"/>   <!--  .....\.m2\repository\xerces\xercesImpl\2.8.1 -->
 	<property name="XERCES_JAR_VERSION" value="2.8.1"/>
 	<property name="XERCES_JAR_DIR" value="${M2_REPO}/xerces/${XERCES_JAR}/${XERCES_JAR_VERSION}"/>
+
+	<property name="SLF4J_JAR" value="slf4j-api"/>   <!--  .....\.m2\repository\org\slf4j\slf4j-api\1.6.1 -->
+	<property name="SLF4J_JAR_VERSION" value="1.6.1"/>
+	<property name="SLF4J_JAR_DIR" value="${M2_REPO}/org/slf4j/${SLF4J_JAR}/${SLF4J_JAR_VERSION}"/>
+
+	<property name="LOGBACK_JAR_VERSION" value="0.9.29"/>
+	
+	<property name="LOGBACK_CORE_JAR" value="logback-core"/>   <!--  .....\.m2\repository\ch\qos\logback\logback-core\0.9.29 -->
+	<property name="LOGBACK_CORE_JAR_DIR" value="${M2_REPO}/ch/qos/logback/${LOGBACK_CORE_JAR}/${LOGBACK_JAR_VERSION}"/>
+	<property name="LOGBACK_CLASSIC_JAR" value="logback-classic"/>   <!--  .....\.m2\repository\ch\qos\logback\logback-classic\0.9.29 -->
+	<property name="LOGBACK_CLASSIC_JAR_DIR" value="${M2_REPO}/ch/qos/logback/${LOGBACK_CLASSIC_JAR}/${LOGBACK_JAR_VERSION}"/>
 	
 	<property name="resources" location="src/main/resources"/>
 	<property name="target" location="target"/>
@@ -134,7 +145,22 @@
 		<echo message=""/>
 		<echo message="-=-=-=-=-=[ Copy XERCES jar to their lib dir ]-=-=-=-=-="/>
 		<copy file="${XERCES_JAR_DIR}/${XERCES_JAR}-${XERCES_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+		
+		<echo message=""/>
+		<echo message="-=-=-=-=-=[ Copy LOGBACK jars to their lib dir ]-=-=-=-="/>
+		<copy file="${LOGBACK_CORE_JAR_DIR}/${LOGBACK_CORE_JAR}-${LOGBACK_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+		<copy file="${LOGBACK_CLASSIC_JAR_DIR}/${LOGBACK_CLASSIC_JAR}-${LOGBACK_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 
+		<echo message="Try to delete ${REXSTER_LIB}/slf4j*"/>
+		<echo message="-=-=-=-=-=-=[ delete obsolete slf4j-api.jar ]-=-=-=-=-=-"/>
+		<delete file="${REXSTER_LIB}/slf4j*" failonerror="true"/>
+		
+		<echo message=""/>
+		<echo message="-=-=-=-=-=-[ Copy SLF4J jar to their lib dir ]=-=-=-=-="/>
+		<copy file="${SLF4J_JAR_DIR}/${SLF4J_JAR}-${SLF4J_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+
+		
+		
 		<echo message=""/>
 		<echo message="-=-=-[ Copy our jar to their extensions directory ]-=-=-"/>
 		<copy file="${target}/mowa-study-0.1-SNAPSHOT.jar" todir="${REXSTER_EXT}" />

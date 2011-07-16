@@ -2,6 +2,10 @@ package net.justtrade.rest.util;
 
 /**
 * 
+* Thrown when analysis of Jena types is unable to determine the node type.
+* 
+* Jena has some very specific types of Nodes, that cause NullPointerExceptions if not correctly identified
+* 
 * @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
 */
 public class UnsupportedTypeException extends Exception {

@@ -17,27 +17,42 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.rexster.RexsterResourceContext;
 import com.tinkerpop.rexster.extension.ExtensionResponse;
 
 
+/**
+ * 
+ * Handles upload of a single file.  Doesn't work for multi-part uploads.
+ * 
+ * @see net.justtrade.rest.handlers.http.MultiPartUploadHandler
+ * 
+ * @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
+ */
 public class FileUploadHandler {
+	
+	private static final Logger logger = LoggerFactory.getLogger(FileUploadHandler.class);
 
-	public static final String CLASS_NAME = "\n" + "FileUploadHandler" + ".";
-
-	/*
-	 * This method leverages the capabilities of the the Apache project org.apache.commons.fileupload
-	 * to load files with very little coding necessary.  They are first streamed directly to the
-	 * "location-of-temp-files", and only processed individually, and stored permanently  at 
+	/**
+	 * This method handles a file upload. I tried to use the Apache project org.apache.commons.fileupload
+	 * but it seems only to handle multiparts.
+	 * The file is first streamed to the "location-of-temp-files", and only processed individually, and stored permanently  at 
 	 * "location-of-graph-archive".  Both of those locations are user-defined in rexster.xml 
+	 * @param _configurationProperties a map containing at least the property : UploadHandler.TEMP_FILES
+	 * @param _context the contextual resources Rexster makes available
+	 * @param _json
+	 * @return the result of the operation in JSON formatted text and packaged in a com.tinkerpop.rexster.ExtensionResponse 
+	 * @see UploadHandler#TEMP_FILES
 	 * 
 	 */
 	public static ExtensionResponse handleUpload
-		(Map<String, String> _names, RexsterResourceContext _context, JSONObject _json)
+		(Map<String, String> _configurationProperties, RexsterResourceContext _context, JSONObject _json)
 			throws JSONException, FileUploadException, IOException, FileNotFoundException
 	{
-		final String sMETHOD = CLASS_NAME + "handleUpload(Map, RexsterResourceContext, JSONObject) --> ";
+		final String sMETHOD = "handleUpload(Map, RexsterResourceContext, JSONObject) --> ";
 
 		JSONObject jsonRslt = new JSONObject();
 		JSONObject filesDetails = null;
@@ -47,28 +62,28 @@ public class FileUploadHandler {
 		HttpServletRequest request = _context.getRequest();
 
 		msg = "Not Multipart Content! Will process as PUT of a single file.";
-		System.out.println(sMETHOD + msg);
+		logger.info(sMETHOD + msg);
 
 		jsonRslt.put("PUT or POSTbehaviour", msg);
 		filesDetails = new JSONObject();
 		fileDetails = new JSONObject();
 
-		File dirDestination = new File(_names.get(UploadHandler.TEMP_FILES));
+		File dirDestination = new File(_configurationProperties.get(UploadHandler.TEMP_FILES));
 		StringBuffer oFileName = new StringBuffer();
-		oFileName.append(_names.get(UploadHandler.EXTENSION_NAME_SPACE));
+		oFileName.append(_configurationProperties.get(UploadHandler.EXTENSION_NAME_SPACE));
 		oFileName.append(".");
-		oFileName.append(_names.get(UploadHandler.EXTENSION_NAME));
+		oFileName.append(_configurationProperties.get(UploadHandler.EXTENSION_NAME));
 		oFileName.append(".");
 		oFileName.append((new SimpleDateFormat("yyyyMMddHHmmss")).format(new Date(System.currentTimeMillis())).toString());
-		String to_name = oFileName.toString();
+		String subRefNodeName = oFileName.toString();
 
-		File fileDestination = new File(dirDestination, to_name);
+		File fileDestination = new File(dirDestination, subRefNodeName);
 
 		// If the destination exists, make sure it is a writeable file
 		// and ask before overwriting it. If the destination doesn't
 		// exist, make sure the directory exists and is writeable.
 		if (fileDestination.exists()) {
-			if (!fileDestination.canWrite()) throw new FileUploadException("Destination file [" + to_name + "] is unwriteable!");
+			if (!fileDestination.canWrite()) throw new FileUploadException("Destination file [" + subRefNodeName + "] is unwriteable!");
 		} else {
 			// If file doesn't exist, check if directory exists and is
 			// writeable. If getParent() returns null, then the directory is
@@ -100,9 +115,10 @@ public class FileUploadHandler {
 				destination.write(buffer, 0, bytes_read); // write
 			}
 			
-			System.out.println(sMETHOD + "Receiving file to : " + fileDestination.getCanonicalPath());
+			logger.info(sMETHOD + "Receiving file to : " + fileDestination.getCanonicalPath());
 			RDF_Loader loader = new RDF_Loader();
-			loader.injectRDF(_names, fileDestination.getCanonicalPath(), to_name, _context);
+//			loader.injectRDF(_configurationProperties, fileDestination.getCanonicalPath(), subRefNodeName, _context);
+			loader.injectRDF(fileDestination.getCanonicalPath(), subRefNodeName, _context);
 
 
 		// Always close the streams, even if exceptions were thrown
@@ -120,7 +136,7 @@ public class FileUploadHandler {
 		}
 
 		jsonRslt.put("filesCount", 1);
-		fileDetails.put("name", to_name);
+		fileDetails.put("name", subRefNodeName);
 		fileDetails.put("size", new Long(request.getContentLength()));
 		filesDetails.append("file_1", fileDetails);
 		jsonRslt.put("files", filesDetails);

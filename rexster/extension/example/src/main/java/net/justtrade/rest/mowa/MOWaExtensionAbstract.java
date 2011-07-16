@@ -1,65 +1,25 @@
 package net.justtrade.rest.mowa;
 
-import java.util.HashMap;
-import java.util.List;
+import net.justtrade.rest.handlers.graph.ExtensionAbstract;
 
-import com.tinkerpop.rexster.extension.AbstractRexsterExtension;
-import com.tinkerpop.rexster.extension.ExtensionResponse;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
- * Base class for samples.
+ * This class simple exposes the project namespace for now, but it's available to 
+ * hold global functionality for the entire tree of possible URL paths.
+ * 
+ * @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
  */
-public abstract class MOWaExtensionAbstract extends AbstractRexsterExtension {
+public abstract class MOWaExtensionAbstract extends ExtensionAbstract {
+
+//	private static final Logger logger = LoggerFactory.getLogger(MOWaExtensionAbstract.class);
+	
     public static final String EXTENSION_NAMESPACE = "mowa";
-    
-    abstract public String getExtensionName();
     
     public String getExtensionNameSpace() {
     	return EXTENSION_NAMESPACE;
     }
-
-    /**
-     * This method helps the root methods by wrapping the output of the toString of the graph element
-     * in JSON to be returned in the ExtensionResponse.  ExtensionResponse has numerous helper methods
-     * to make it easy to build the response object.
-     *
-     * Outputted JSON (if the object is a graph) will look like this:
-     *
-     * {"output":"tinkergraph[vertices:6 edges:6]","version":"0.3-SNAPSHOT","queryTime":38.02189}
-     *
-     * Note the "version" and "queryTime" properties within the JSON.  Rexster will attempt to automatically
-     * add these items when it understands the output to be JSON.  It is possible to override this default
-     * behavior by setting the tryIncludeRexsterAttributes on the @Extension definition to false.
-     */
-    protected ExtensionResponse toStringIt(Object obj, String path) {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("output", obj.toString());
-        map.put("workCameFrom", path);
-        return ExtensionResponse.ok(map);
-    }
-    
-    
-	protected ExtensionResponse toStringSimple(Object obj, String path) {
-		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("output", obj.toString());
-		map.put("workCameFrom", path);
-		return ExtensionResponse.ok(map);
-	}
-
-	protected ExtensionResponse toStringIt(Object obj, String path, List<String> hateaos) {
-
-		System.out.println("\n\nAbstractStudyExtension.EXTENSION_NAMESPACE :: " + MOWaRootExtension.EXTENSION_NAMESPACE);
-		System.out.println("output :: " + obj.toString());
-		System.out.println("workCameFrom :: " + path);
-
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("output", obj.toString());
-		map.put("workCameFrom", path);
-		map.put("options", hateaos);
-
-		return ExtensionResponse.ok(map);
-
-	}
 
 
 }

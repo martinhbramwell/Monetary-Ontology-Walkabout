@@ -13,6 +13,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.rexster.RexsterResourceContext;
 import com.tinkerpop.rexster.extension.ExtensionResponse;
@@ -21,11 +23,17 @@ import net.justtrade.rest.handlers.rdf.RDF_Loader;
 import net.justtrade.rest.util.FileWriteException;
 
 
+/**
+* 
+* Exploits 
+* 
+* @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
+*/
 public class MultiPartUploadHandler extends UploadHandler {
 
-	public static final String CLASS_NAME = "\n" + "MultiPartUploadHandler" + ".";
+	private static final Logger logger = LoggerFactory.getLogger(MultiPartUploadHandler.class);
 	
-	/*
+	/**
 	 * This method leverages the capabilities of the the Apache project org.apache.commons.fileupload
 	 * to load files with very little coding necessary.  They are first streamed directly to the
 	 * "location-of-temp-files", and only processed individually, and stored permanently  at 
@@ -33,20 +41,20 @@ public class MultiPartUploadHandler extends UploadHandler {
 	 * 
 	 */
 	public static ExtensionResponse handleUpload
-		(Map<String, String> _names, RexsterResourceContext _context, JSONObject _json) 
+		(Map<String, String> _configurationProperties, RexsterResourceContext _context, JSONObject _json) 
 			throws JSONException, FileUploadException, FileWriteException
 	{
-		final String sMETHOD = CLASS_NAME + "handleUpload() --> ";
+		final String sMETHOD = "handleUpload() --> ";
 		
 		JSONObject filesDetails = null;
 		JSONObject fileDetails = null;
 		
 		String msg = "";
 		
-		File dirTmp = new File(_names.get(TEMP_FILES) + "/");
+		File dirTmp = new File(_configurationProperties.get(TEMP_FILES) + "/");
 		
 		msg = "Detected Multipart Content! Will process as POST of one or more files.";
-		System.out.println(sMETHOD + msg);
+		logger.info(sMETHOD + msg);
 		_json.put("PUT or POSTbehaviour", msg);
 		
 		filesDetails = new JSONObject();
@@ -64,7 +72,7 @@ public class MultiPartUploadHandler extends UploadHandler {
 		@SuppressWarnings("unchecked")
 		List<FileItem> /* FileItem */ items = upload.parseRequest(_context.getRequest());
 
-		String name = "";
+		String subRefNodeName = "";
 		iter = items.iterator();
 		int filesCount = 0;
 
@@ -72,38 +80,37 @@ public class MultiPartUploadHandler extends UploadHandler {
 		while (iter.hasNext()) {
 			filesCount++;
 			item = iter.next();
-			name = item.getFieldName();
+			subRefNodeName = item.getFieldName();
 			sizeInBytes = item.getSize();
 			
 			fileDetails = new JSONObject();
 
 			if (item.isFormField()) {
 
-				System.out.println(sMETHOD + "Is Form Field -- Form name '" + name + ".");
+				logger.debug(sMETHOD + "Is Form Field -- Form name '" + subRefNodeName + ".");
 
 			} else {
 				
-				System.out.println(sMETHOD + "Receiving File Upload.");
-				System.out.println
+				logger.debug(sMETHOD + "Receiving File Upload.");
+				logger.debug
 				(
 						sMETHOD 
-						+       "Item named '" + name
+						+       "Item named '" + subRefNodeName
 						+            "' is a " + item.getSize()
 						+ " byte file named '" + item.getName() 
 						+        "'.  Type : " + item.getContentType()
 				);
 
+				logger.debug(sMETHOD + "Receiving File Upload.");
+				uploadedFile = archiveTripleFile(item, _configurationProperties.get(GRAPH_ARCHIVE) + "/");
 				
-
-				System.out.println(sMETHOD + "Receiving File Upload.");
-				uploadedFile = archiveTripleFile(item, _names.get(GRAPH_ARCHIVE) + "/");
-				
-				System.out.println(sMETHOD + "Receiving File Upload.");
+				logger.debug(sMETHOD + "Receiving File Upload.");
 				RDF_Loader loader = new RDF_Loader();
-				loader.injectRDF(_names, uploadedFile, name, _context);
+//				loader.injectRDF(_configurationProperties, uploadedFile, subRefNodeName, _context);
+				loader.injectRDF(uploadedFile, subRefNodeName, _context);
 
 			}
-			fileDetails.put("name", name);
+			fileDetails.put("name", subRefNodeName);
 			fileDetails.put("size", new Long(sizeInBytes));
 			filesDetails.append("file_" + filesCount, fileDetails);
 		}
@@ -115,13 +122,22 @@ public class MultiPartUploadHandler extends UploadHandler {
 		
 	}
 	
-	protected static String archiveTripleFile (FileItem item, String pathArchive) throws FileWriteException
+	/**
+	 * "Information hiding" method for saving an archive copy of a file 
+	 * 
+	 * @param item a file item created by org.apache.commons.fileupload 
+	 * @param pathArchive The place to stick it
+	 * @return the full path definition of the saved file
+	 * @throws FileWriteException
+	 */
+	protected static String archiveTripleFile (FileItem item, String pathArchive) 
+		throws FileWriteException
 	{
-		final String sMETHOD = CLASS_NAME + "archiveTripleFile(FileItem, String) --> ";
+		final String sMETHOD = "archiveTripleFile(FileItem, String) --> ";
 
 		String fileName = item.getName();
 
-		System.out.println(sMETHOD + "Storing locally the file : '" + fileName + "'");
+		logger.debug(sMETHOD + "Storing the file : '" + fileName + "' locally.");
 
 		File dirArchive = new File(pathArchive + fileName);
 
@@ -130,7 +146,7 @@ public class MultiPartUploadHandler extends UploadHandler {
 		} catch (Exception e) {
 			throw new FileWriteException();
 		}
-		System.out.println(sMETHOD + "Rewritten to '" + pathArchive + fileName + "'.");
+		logger.debug(sMETHOD + "Rewritten to '" + pathArchive + fileName + "'.");
 
 		return pathArchive + fileName;
 

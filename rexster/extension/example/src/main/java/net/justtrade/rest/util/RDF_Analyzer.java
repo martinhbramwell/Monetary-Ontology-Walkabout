@@ -3,23 +3,31 @@ package net.justtrade.rest.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.justtrade.rest.mowa.MOWaExtension;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 /**
  * RDF_Analyzer is a debugging tool. It helps figure out Jena's 
  * terminology of Nodes that may be specialized as one or more of :
- *  - Blank
- *  - Concrete
- *  - Literal
- *  - URI
- *  - Variable
+ * <ul>
+ *   <li>Blank</li>
+ *   <li>Blank</li>
+ *   <li>Concrete</li>
+ *   <li>Literal</li>
+ *   <li>URI</li>
+ *   <li>Variable</li>
+ * </ul>
  *  
  *  It builds a map of the possible combinations actually used, and 
  *  for each combination, collects an array of the Triples that 
  *  have those combinations.
  *  
- * @author Hasan
+ *  @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
  */
 public class RDF_Analyzer {
 
@@ -27,6 +35,8 @@ public class RDF_Analyzer {
 
 	private static HashMap<Long, ArrayList<Triple>> categories = new HashMap<Long, ArrayList<Triple>>();
 	private static HashMap<Long, StringBuffer> flagsUsed = new HashMap<Long, StringBuffer>();
+	
+	private static final Logger logger = LoggerFactory.getLogger(MOWaExtension.class);
 	
 
 	/**
@@ -41,7 +51,7 @@ public class RDF_Analyzer {
 	 * a profile of the triple and adds the triple to the analysis
 	 * map under that profile.
 	 * 
-	 * @param Triple -- This a JENA triple to be analyzed.
+	 * @param triple -- This a JENA triple to be analyzed.
 	 */
 	public static void collectModelAnalysisData(Triple triple)
 	{
@@ -76,7 +86,7 @@ public class RDF_Analyzer {
 		attrKey = new Long(Util.getByteX(flags, 0));
 		if (flagsUsed.get(attrKey) == null)
 		{
-			System.out.println(sMETHOD + "Saving -- Key : " + Long.toBinaryString(attrKey) + " Attributes : " + attributes);
+			logger.debug(sMETHOD + "Saving -- Key : " + Long.toBinaryString(attrKey) + " Attributes : " + attributes);
 			flagsUsed.put(attrKey, attributes);
 		}
 
@@ -97,7 +107,7 @@ public class RDF_Analyzer {
 		attrKey = new Long(Util.getByteX(flags, 0));
 		if (flagsUsed.get(attrKey) == null)
 		{
-			System.out.println(sMETHOD + "Saving -- Key : " + Long.toBinaryString(attrKey) + " Attributes : " + attributes);
+			logger.debug(sMETHOD + "Saving -- Key : " + Long.toBinaryString(attrKey) + " Attributes : " + attributes);
 			flagsUsed.put(attrKey, attributes);
 		}
 
@@ -119,12 +129,12 @@ public class RDF_Analyzer {
 		attrKey = new Long(Util.getByteX(flags, 0));
 		if (flagsUsed.get(attrKey) == null)
 		{
-			System.out.println(sMETHOD + "Saving -- Key : " + Long.toBinaryString(attrKey) + " Attributes : " + attributes);
+			logger.debug(sMETHOD + "Saving -- Key : " + Long.toBinaryString(attrKey) + " Attributes : " + attributes);
 			flagsUsed.put(attrKey, attributes);
 		}
 
 
-		//			System.out.println(sMETHOD + " Flags are : " + Long.toBinaryString(flags));
+		//			logger.debug(sMETHOD + " Flags are : " + Long.toBinaryString(flags));
 		Long key = new Long(flags);
 
 		ArrayList<Triple> triples = categories.get(key);
@@ -146,16 +156,16 @@ public class RDF_Analyzer {
 		ArrayList<Triple> triples;
 		for(Long key : categories.keySet() )
 		{
-			System.out.println("With key '" + Long.toBinaryString(key) + "' we got these triples :");
-			System.out.println("Subject   : '" + flagsUsed.get(Util.getByteX(key.longValue(), 2)) + "'.");
-			System.out.println("Predicate : '" + flagsUsed.get(Util.getByteX(key.longValue(), 1)) + "'.");
-			System.out.println("Object    : '" + flagsUsed.get(Util.getByteX(key.longValue(), 0)) + "'.");
+			logger.debug("With key '" + Long.toBinaryString(key) + "' we got these triples :");
+			logger.debug("Subject   : '" + flagsUsed.get(Util.getByteX(key.longValue(), 2)) + "'.");
+			logger.debug("Predicate : '" + flagsUsed.get(Util.getByteX(key.longValue(), 1)) + "'.");
+			logger.debug("Object    : '" + flagsUsed.get(Util.getByteX(key.longValue(), 0)) + "'.");
 
 			triples = categories.get(key);
 			java.util.Collections.sort(triples, new TripleComparator());
 			for(Triple triple : triples )
 			{
-				System.out.println(" - Triple '" + triple + "'.");
+				logger.debug(" - Triple '" + triple + "'.");
 			}
 		}
 	}
