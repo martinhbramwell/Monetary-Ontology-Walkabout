@@ -112,8 +112,16 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 		final String sMETHOD = "putBasePath(RexsterResourceContext) :\n";
 		logger.info(sMETHOD + COMMENT);
 		
+		long startTime = System.currentTimeMillis();
+		logger.info(sMETHOD + "Time now (start) : " + startTime);
+		
 		BasePathManager manager = new BasePathManager(); 
-		return manager.put(context, this);
+		
+		ExtensionResponse resp = manager.put(context, this); 
+		
+		long endTime = System.currentTimeMillis();
+		logger.info(sMETHOD + "Time  : " + endTime + " - " + startTime + " = " + (endTime-startTime));
+		return resp;
 
 	}
 
