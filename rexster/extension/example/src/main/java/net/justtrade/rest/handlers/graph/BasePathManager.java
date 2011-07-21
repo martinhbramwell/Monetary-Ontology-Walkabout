@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONException;
 
-import com.tinkerpop.blueprints.pgm.IndexableGraph;
+import com.tinkerpop.blueprints.pgm.TransactionalGraph;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.rexster.RexsterApplicationGraph;
 import com.tinkerpop.rexster.RexsterResourceContext;
@@ -99,7 +99,7 @@ public class BasePathManager {
 				logger.debug(sMETHOD + "\n\n\n\nReady to delete : ");
 				
 				RexsterApplicationGraph rag = _context.getRexsterApplicationGraph();
-				IndexableGraph graph = (IndexableGraph) rag.getGraph();
+				TransactionalGraph graph = (TransactionalGraph) rag.getGraph();
 
 				try {
 					
