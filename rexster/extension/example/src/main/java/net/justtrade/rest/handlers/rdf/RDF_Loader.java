@@ -23,6 +23,8 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.tinkerpop.blueprints.pgm.Edge;
 import com.tinkerpop.blueprints.pgm.Index;
 import com.tinkerpop.blueprints.pgm.IndexableGraph;
+import com.tinkerpop.blueprints.pgm.TransactionalGraph;
+import com.tinkerpop.blueprints.pgm.TransactionalGraph.Mode;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.util.IndexableGraphHelper;
 import com.tinkerpop.rexster.RexsterApplicationGraph;
@@ -54,20 +56,34 @@ public class RDF_Loader {
 		final String sMETHOD = "injectRDF(String, String, RexsterResourceContext) --> ";
 		
 		RexsterApplicationGraph rag = _context.getRexsterApplicationGraph();
+		TransactionalGraph tranGraph = (TransactionalGraph) rag.getGraph();
+		tranGraph.setTransactionMode(Mode.MANUAL);
+		
+		boolean bSuccess = false;
 		
 		try {
-			logger.debug(sMETHOD + "Writing " + _tripleFile + " contents to triple store.");
-			writeToGraphStore(_subRefNodeName, _tripleFile, (IndexableGraph) rag.getGraph());
+
+			logger.info(sMETHOD + " * * * Starting Transaction * * * ");
+			tranGraph.startTransaction();
+			logger.info(sMETHOD + "Writing " + _tripleFile + " contents to triple store.");
+			writeToGraphStore(_subRefNodeName, _tripleFile, (IndexableGraph) tranGraph);
+			logger.info(sMETHOD + "Wrote " + _tripleFile + " contents to triple store.");
+
+			logger.info(sMETHOD + " * * * Stopping Transaction * * * ");
+			tranGraph.stopTransaction(TransactionalGraph.Conclusion.SUCCESS);
+
+			bSuccess = true;
 			
 		} catch (MalformedURLException mfuex) {
 			logger.error(sMETHOD + "* * * Bad URL failure * * * \n" + mfuex.getLocalizedMessage() + "\n" + mfuex.getStackTrace());
 
 		} catch (Exception ex) {
-			logger.error(sMETHOD + "* * * Input/output problem with upload file * * * \n" + ex.getLocalizedMessage());
+			logger.error(sMETHOD + "* * * Input/output problem with upload file * * * \n* * * " + ex.getLocalizedMessage() + " * * *");
 
+		} finally {
+
+			if ( ! bSuccess) tranGraph.stopTransaction(TransactionalGraph.Conclusion.FAILURE);
 		}
-
-		logger.debug(sMETHOD + "Finished graph injection : " + _tripleFile + ".");
 
 		RDF_Analyzer.analyzeModelData();			  	  	
 
@@ -139,7 +155,20 @@ public class RDF_Loader {
 
 				try {
 
-					if ( ! predicate.isURI()) { throw new UnsupportedTypeException
+					if ( predicate.isURI()) {
+						
+						//logger.info("Added edge -- " + ((Node_URI) predicate).getURI());
+						logger.debug(sMETHOD
+								+ "\n" + ((Node_URI) predicate).getURI() 
+								+ "\n" + ((Node_URI) predicate).getLocalName()
+								+ "\n" + ((Node_URI) predicate).getNameSpace()
+						);
+						Edge edge = _graph.addEdge(((Node_URI) predicate).getURI(), subjectVertex, objectVertex, ((Node_URI) predicate).getLocalName());
+						logTriple(subjectVertex, edge, objectVertex);
+						
+					} else {
+						
+						throw new UnsupportedTypeException
 						(
 								  "\n" + predicate.toString()
 								+ "\n Is Blank ? [" + predicate.isBlank() 
@@ -148,14 +177,7 @@ public class RDF_Loader {
 								+ "].\n Is Variable ? [" + predicate.isVariable()
 								+ "]."  
 						);
-					} else {
-						logger.debug(sMETHOD
-								+ "\n" + ((Node_URI) predicate).getURI() 
-								+ "\n" + ((Node_URI) predicate).getLocalName()
-								+ "\n" + ((Node_URI) predicate).getNameSpace()
-						);
-						Edge edge = _graph.addEdge(((Node_URI) predicate).getURI(), subjectVertex, objectVertex, ((Node_URI) predicate).getLocalName());
-						logTriple(subjectVertex, edge, objectVertex);
+						
 					}
 
 				} catch (Throwable th) {
@@ -241,9 +263,9 @@ public class RDF_Loader {
 		logger.debug
 		(
 				"Wrote triple -- "
-				+ " S:" + vtxSource.getProperty(FIELD_ENTITY_NAME) 
-				+ " P:" + edge.toString()
-				+ " O:" + vtxTarget.getProperty(FIELD_ENTITY_NAME)
+				+ "\n S:" + vtxSource.getProperty(FIELD_ENTITY_NAME) 
+				+ "\n P:" + edge.toString()
+				+ "\n O:" + vtxTarget.getProperty(FIELD_ENTITY_NAME)
 		);
 	}
 }
