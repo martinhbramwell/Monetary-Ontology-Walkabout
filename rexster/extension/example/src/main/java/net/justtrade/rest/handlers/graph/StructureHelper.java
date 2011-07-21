@@ -48,8 +48,11 @@ public class StructureHelper {
 		
 		
 		logger.debug(sMETHOD + "Connecting...");
-		_graph.addEdge(null, _subjectVertex, _objectVertex, _edgeName);
 		
+		_graph.addEdge(null, _subjectVertex, _objectVertex, _edgeName);
+
+		//logger.info("Added edge -- " + (_edgeName==null  ?  "no name"  :  _edgeName));
+
 		logger.debug(sMETHOD + "Done.");
 	}
 	

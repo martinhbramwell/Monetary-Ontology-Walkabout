@@ -39,10 +39,10 @@ import com.tinkerpop.rexster.extension.ExtensionResponse;
  * when routing to the service method, therefore, if more than one root-level extension is specified
  * then Rexster may appear to misbehave.  Rexster will choose the first extension method match that
  * it can find when processing a request.
- * See {@link MOWaExtension} for details about multiple classes serving one tree of possible URL paths. 
+ * See {@link MOWaRelationshipsExtension, MOWaPersonsExtension} for details about multiple classes serving one tree of possible URL paths. 
  *
  * @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
- * @see MOWaExtension
+ * @see MOWaRelationshipsExtension, MOWaPersonsExtension
  */
 @ExtensionNaming(name = MOWaRootExtension.EXTENSION_NAME, namespace = MOWaExtensionAbstract.EXTENSION_NAMESPACE)
 public class MOWaRootExtension extends MOWaExtensionAbstract {

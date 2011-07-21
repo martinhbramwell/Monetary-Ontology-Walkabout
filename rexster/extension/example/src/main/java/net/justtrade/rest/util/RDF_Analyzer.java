@@ -3,8 +3,6 @@ package net.justtrade.rest.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.justtrade.rest.mowa.MOWaExtension;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +34,7 @@ public class RDF_Analyzer {
 	private static HashMap<Long, ArrayList<Triple>> categories = new HashMap<Long, ArrayList<Triple>>();
 	private static HashMap<Long, StringBuffer> flagsUsed = new HashMap<Long, StringBuffer>();
 	
-	private static final Logger logger = LoggerFactory.getLogger(MOWaExtension.class);
+	private static final Logger logger = LoggerFactory.getLogger(RDF_Analyzer.class);
 	
 
 	/**

@@ -1,5 +1,3 @@
-# net.justtrade.rest.mowa.StudyPathExtension
-
-net.justtrade.rest.mowa.MOWaExtension
+net.justtrade.rest.mowa.MOWaRelationshipsExtension
+net.justtrade.rest.mowa.MOWaPersonsExtension
 net.justtrade.rest.mowa.MOWaRootExtension
-# net.justtrade.rest.mowa.MOWaRootExtension

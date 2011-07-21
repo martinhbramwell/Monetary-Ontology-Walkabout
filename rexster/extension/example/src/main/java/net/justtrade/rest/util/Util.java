@@ -1,7 +1,5 @@
 package net.justtrade.rest.util;
 
-import net.justtrade.rest.mowa.MOWaExtension;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +10,7 @@ import org.slf4j.LoggerFactory;
 */
 public class Util {
 
-	private static final Logger logger = LoggerFactory.getLogger(MOWaExtension.class);
+	private static final Logger logger = LoggerFactory.getLogger(Util.class);
 	
 	
 	/**

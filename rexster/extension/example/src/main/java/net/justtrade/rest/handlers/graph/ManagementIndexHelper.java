@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.tinkerpop.blueprints.pgm.CloseableSequence;
 import com.tinkerpop.blueprints.pgm.Index;
 import com.tinkerpop.blueprints.pgm.IndexableGraph;
+import com.tinkerpop.blueprints.pgm.TransactionalGraph;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.util.IndexableGraphHelper;
 
@@ -45,12 +46,12 @@ public class ManagementIndexHelper {
 	 */
 	public static Vertex getCollectionRefVertex 
 	(		  String _refNodeName
-			, IndexableGraph _graph
+			, TransactionalGraph _graph
 			, boolean _makeIfNotFound
 	)
 		throws ReferenceNodeNotFoundException, MultipleReferenceNodesException
 	{ 
-		final String sMETHOD = "getCollectionRefVertex(String, IndexableGraph, boolean) --> ";
+		final String sMETHOD = "getCollectionRefVertex(String, TransactionalGraph, boolean) --> ";
 		logger.debug(sMETHOD + " Starting.");
 		
 		Vertex rsltVertex = getReferenceVertex
@@ -64,7 +65,7 @@ public class ManagementIndexHelper {
 		
 		Vertex rootVertex = getReferenceVertex (_graph, true);
 		
-		StructureHelper.connect(rootVertex, rsltVertex, "Reference node : " + _refNodeName, _graph);
+		StructureHelper.connect(rootVertex, rsltVertex, "Reference node : " + _refNodeName, ((IndexableGraph)_graph));
 		
 		logger.debug(sMETHOD + " Done.");
 		return rsltVertex;
@@ -82,12 +83,12 @@ public class ManagementIndexHelper {
 	 * @throws Exception if thrown.
 	 */
 	public static Vertex getReferenceVertex 
-	(		  IndexableGraph _graph
+	(		  TransactionalGraph _graph
 			, boolean _makeIfNotFound
 	)
 		throws ReferenceNodeNotFoundException, MultipleReferenceNodesException
 	{ 
-		final String sMETHOD = "getCollectionRefVertex(IndexableGraph, boolean) --> ";
+		final String sMETHOD = "getCollectionRefVertex(TransactionalGraph, boolean) --> ";
 		logger.debug(sMETHOD + " Starting.");
 		
 		return getReferenceVertex
@@ -115,12 +116,12 @@ public class ManagementIndexHelper {
 	 */
 	public static Vertex getReferenceVertex 
 	(		  String _refIndxName
-			, IndexableGraph _graph
+			, TransactionalGraph _graph
 			, boolean _makeIfNotFound
 	)
 		throws ReferenceNodeNotFoundException, MultipleReferenceNodesException
 	{ 
-		final String sMETHOD = "getCollectionRefVertex(String, IndexableGraph, boolean) --> ";
+		final String sMETHOD = "getCollectionRefVertex(String, TransactionalGraph, boolean) --> ";
 		logger.debug(sMETHOD + " Starting.");
 		
 		return getReferenceVertex
@@ -151,12 +152,12 @@ public class ManagementIndexHelper {
 			  String _refNodeKey
 			, String _refNodeName
 			, String _refIndxName
-			, IndexableGraph _graph
+			, TransactionalGraph _graph
 			, boolean _makeIfNotFound
 	)
 		throws ReferenceNodeNotFoundException, MultipleReferenceNodesException
 	{ 
-		final String sMETHOD = "getReferenceVertex(String, String, String, IndexableGraph, boolean) --> ";
+		final String sMETHOD = "getReferenceVertex(String, String, String, TransactionalGraph, boolean) --> ";
 		long refVertexId;
 		CloseableSequence<Vertex> vertices = null;
 		Vertex refVertex = null;
@@ -170,7 +171,7 @@ public class ManagementIndexHelper {
 		
 		logger.debug(sMETHOD + "Possibly there's no index, if not make one."); 
 		try {
-			index = _graph.getIndex(_refIndxName, Vertex.class);
+			index = ((IndexableGraph)_graph).getIndex(_refIndxName, Vertex.class);
 		} catch (RuntimeException rtex) {
 			String msg = rtex.getLocalizedMessage();
 			int pos = msg.indexOf("No such index");
@@ -183,7 +184,7 @@ public class ManagementIndexHelper {
 		}
 		if (index == null) {
 			logger.info(sMETHOD + "No index : " + _refIndxName + ". Creating now."); 
-			index = _graph.createManualIndex(_refIndxName, Vertex.class);
+			index = ((IndexableGraph)_graph).createManualIndex(_refIndxName, Vertex.class);
 			logger.debug(sMETHOD + "New index : " + _refIndxName + ". "); 
 		}
 		
@@ -206,7 +207,7 @@ public class ManagementIndexHelper {
 
 				logger.debug(sMETHOD + "Creating reference vertex named '" + _refNodeName + "'.");
 				
-				refVertex = IndexableGraphHelper.addUniqueVertex(_graph, null, index, _refNodeKey, _refNodeName);
+				refVertex = IndexableGraphHelper.addUniqueVertex(((IndexableGraph)_graph), null, index, _refNodeKey, _refNodeName);
 				index.put(_refNodeKey, _refNodeName, refVertex);
 				refVertexId = ((Long) refVertex.getId()).longValue();
 
@@ -246,7 +247,7 @@ public class ManagementIndexHelper {
 			
 			if (_graph == null) throw new Exception("No graph.");
 			
-			Index<Vertex> idxMgmnt = _graph.getIndex(MANAGEMENT_INDEX_NAME, Vertex.class);
+			Index<Vertex> idxMgmnt = ((IndexableGraph)_graph).getIndex(MANAGEMENT_INDEX_NAME, Vertex.class);
 			if (idxMgmnt == null) throw new Exception("No index.");
 			
 			logger.debug(sMETHOD + "Setting management properties ...");
@@ -256,7 +257,8 @@ public class ManagementIndexHelper {
 			idxMgmnt.put(MANAGEMENT_NODES_KEY, managementId, _managedVertex);
 			
 			logger.debug(sMETHOD + "... and connecting to manager node.");
-			StructureHelper.connect(_managerVertex, _managedVertex, "Reference node : " + managerNodeName, _graph);
+			StructureHelper.connect(_managerVertex, _managedVertex
+					, "Reference node : " + managerNodeName, ((IndexableGraph)_graph));
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -24,10 +24,10 @@ import com.tinkerpop.blueprints.pgm.Edge;
 import com.tinkerpop.blueprints.pgm.Index;
 import com.tinkerpop.blueprints.pgm.IndexableGraph;
 import com.tinkerpop.blueprints.pgm.TransactionalGraph;
-import com.tinkerpop.blueprints.pgm.TransactionalGraph.Mode;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.util.IndexableGraphHelper;
-import com.tinkerpop.rexster.RexsterApplicationGraph;
+import com.tinkerpop.blueprints.pgm.util.TransactionalGraphHelper;
+import com.tinkerpop.blueprints.pgm.util.TransactionalGraphHelper.CommitManager;
 import com.tinkerpop.rexster.RexsterResourceContext;
 
 /**
@@ -55,24 +55,13 @@ public class RDF_Loader {
 	{
 		final String sMETHOD = "injectRDF(String, String, RexsterResourceContext) --> ";
 		
-		RexsterApplicationGraph rag = _context.getRexsterApplicationGraph();
-		TransactionalGraph tranGraph = (TransactionalGraph) rag.getGraph();
-		tranGraph.setTransactionMode(Mode.MANUAL);
-		
-		boolean bSuccess = false;
+		TransactionalGraph tranGraph = (TransactionalGraph) _context.getRexsterApplicationGraph().getGraph();
 		
 		try {
 
-			logger.info(sMETHOD + " * * * Starting Transaction * * * ");
-			tranGraph.startTransaction();
 			logger.info(sMETHOD + "Writing " + _tripleFile + " contents to triple store.");
-			writeToGraphStore(_subRefNodeName, _tripleFile, (IndexableGraph) tranGraph);
+			writeToGraphStore(_subRefNodeName, _tripleFile, tranGraph);
 			logger.info(sMETHOD + "Wrote " + _tripleFile + " contents to triple store.");
-
-			logger.info(sMETHOD + " * * * Stopping Transaction * * * ");
-			tranGraph.stopTransaction(TransactionalGraph.Conclusion.SUCCESS);
-
-			bSuccess = true;
 			
 		} catch (MalformedURLException mfuex) {
 			logger.error(sMETHOD + "* * * Bad URL failure * * * \n" + mfuex.getLocalizedMessage() + "\n" + mfuex.getStackTrace());
@@ -80,9 +69,6 @@ public class RDF_Loader {
 		} catch (Exception ex) {
 			logger.error(sMETHOD + "* * * Input/output problem with upload file * * * \n* * * " + ex.getLocalizedMessage() + " * * *");
 
-		} finally {
-
-			if ( ! bSuccess) tranGraph.stopTransaction(TransactionalGraph.Conclusion.FAILURE);
 		}
 
 		RDF_Analyzer.analyzeModelData();			  	  	
@@ -90,23 +76,32 @@ public class RDF_Loader {
 
 	}
 
-	private void writeToGraphStore (String subRefNodeName, String _tripleFile, IndexableGraph _graph) throws MalformedURLException
+	private void writeToGraphStore (String subRefNodeName, String _tripleFile, TransactionalGraph _graph) throws MalformedURLException
 	{
 		final String sMETHOD = "writeToGraphStore(String, String, IndexableGraph) --> ";
 
 		Model model = ModelFactory.createDefaultModel();
 		model.read("file:\\" + _tripleFile);
 
+		logger.info(sMETHOD + " * * * Starting Transaction * * * ");
+		CommitManager tranMan = TransactionalGraphHelper.createCommitManager(_graph, 50);
+		
 		StmtIterator it = model.listStatements();
 		while (it.hasNext()) {
 			Triple triple = it.next().asTriple();
 			try {
-				insertIntoDb(ManagementIndexHelper.getCollectionRefVertex(subRefNodeName, _graph, true), triple, _graph);
+				insertIntoDb(ManagementIndexHelper.getCollectionRefVertex(subRefNodeName, _graph, true), triple, ((IndexableGraph)_graph));
 
+				tranMan.incrCounter();
+				if(tranMan.atCommit()) System.out.print(".");
+
+				
 			} catch (Exception ex) {
 				logger.error(sMETHOD + " * * *  Hit an exception on triple " + triple + "\n" + ex.getStackTrace());
 			}
 		}
+		logger.info(sMETHOD + " * * * Stopping Transaction * * * ");
+		tranMan.close();
 	}
 
 	/**

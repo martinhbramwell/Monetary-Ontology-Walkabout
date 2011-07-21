@@ -4,9 +4,6 @@ package net.justtrade.rest.mowa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
-
 import com.tinkerpop.blueprints.pgm.Graph;
 import com.tinkerpop.rexster.extension.ExtensionNaming;
 import com.tinkerpop.rexster.extension.ExtensionDefinition;
@@ -47,7 +44,14 @@ import com.tinkerpop.rexster.extension.RexsterContext;
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 	</TR>
 	<TR BGCOLOR="white" CLASS="TableRowColor">
-		<TD ALIGN="right" VALIGN="top">&nbsp;MOWaExtension</TD>
+		<TD ALIGN="right" VALIGN="top">&nbsp;MOWaRelationshipsExtension</TD>
+		<TD>&nbsp;http://localhost:8182/neo4jsample/mowa/stevens/relationships
+		
+		<BR>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	<TR BGCOLOR="white" CLASS="TableRowColor">
+		<TD ALIGN="right" VALIGN="top">&nbsp;MOWaPersonsExtension</TD>
 		<TD>&nbsp;http://localhost:8182/neo4jsample/mowa/stevens/persons
 		
 		<BR>
@@ -56,58 +60,22 @@ import com.tinkerpop.rexster.extension.RexsterContext;
 </TABLE>
  * 
  * @author Martin "Hasan" Bramwell (http://hasanbramwell.blogspot.com/2011/03/hello-world.html)
- * @see MOWaRootExtension
+ * @see MOWaRootExtension, MOWaPersonsExtension
  */
-@ExtensionNaming(name = MOWaExtension.EXTENSION_NAME, namespace = MOWaExtensionAbstract.EXTENSION_NAMESPACE)
-public class MOWaExtension extends MOWaExtensionAbstract {
+@ExtensionNaming(name = MOWaRelationshipsExtension.EXTENSION_NAME, namespace = MOWaExtensionAbstract.EXTENSION_NAMESPACE)
+public class MOWaRelationshipsExtension extends MOWaExtensionAbstract {
 	
     public static final String EXTENSION_NAME = "stevens";
     
 	public static final String basePath = EXTENSION_NAMESPACE + "/" + EXTENSION_NAME;
-//	private static final String CLASS_NAME = "\n" + "MOWaRootExtension" + ".";
 
-	private static final Logger logger = LoggerFactory.getLogger(MOWaExtension.class);
+//	private static final Logger logger = LoggerFactory.getLogger(MOWaRelationshipsExtension.class);
 	
 	@Override
 	public String getExtensionName() {return MOWaRootExtension.EXTENSION_NAME;}
 
 	@Override
 	public String getBasePath() {return basePath;}
-
-    /**
-     * By adding the @RexsterContext attribute to the "graph" parameter, the graph requested gets
-     * automatically injected into the extension.  Therefore, when the following URI is requested:
-     *
-     * http://localhost:8182/tinkergraph/tp/simple-path/persons
-     *
-     * the graph called "graphname" will be pushed into this method.
-     */
-
-    @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, path = "persons", method = HttpMethod.GET )
-    @ExtensionDescriptor(description = "This gives access to the 'persons' path, with HttpMethod.GET.")
-    public ExtensionResponse doGetSome(@RexsterContext Graph graph) {
-		final String sMETHOD = "doGetSome(@RexsterContext Graph) :\n";
-    	
-    	String msg = "GET persons ***** ";
-    	
-		if (logger.isDebugEnabled()) {
-			
-			logger.debug("Test: DEBUG level message.");
-		    // assume SLF4J is bound to logback in the current environment
-		    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		    // print logback's internal status
-		    StatusPrinter.print(lc);
-		}
-		logger.info(sMETHOD + msg);
-    	
-        return toStringIt(graph, msg);
-    }
-
-    @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, path = "persons", method = HttpMethod.POST )
-    @ExtensionDescriptor(description = "This gives access to the 'persons' path, with HttpMethod.POST.")
-    public ExtensionResponse doPostSome(@RexsterContext Graph graph) {
-        return toStringIt(graph, "POST persons");
-    }
 
      /**
      * By adding the @RexsterContext attribute to the "graph" parameter, the graph requested gets

@@ -71,6 +71,7 @@ public class UploadHandler {
 		} catch (FileUploadException fuex) {
 			logger.error(sMETHOD + "* * * File Upload Failure * * * \n" + fuex.getLocalizedMessage());
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			logger.error(sMETHOD + "* * * Input/output problem with upload file * * * \n" + ex.getLocalizedMessage());
 		}
 
