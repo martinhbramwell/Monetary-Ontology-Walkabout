@@ -85,6 +85,8 @@ public class BasePathManager {
 	{
 		final String sMETHOD = "delete(RexsterResourceContext, ExtensionAbstract, String) :\n";
 		
+		logger.info(sMETHOD + "Preparing delete : ");
+		
 		configurationProperties = initConfig(_context, _extension);
 		if (configurationProperties == null) {
 			String message = "Found no configuration to load using : <namespace>" + _extension.getExtensionNameSpace() + "</namespace> and <name>" + _extension.getExtensionName() + "</name>.";
@@ -96,24 +98,15 @@ public class BasePathManager {
 			JSONObject jsonRslt = new JSONObject();
 			try {
 				
-				logger.debug(sMETHOD + "\n\n\n\nReady to delete : ");
+				logger.debug(sMETHOD + "\n\n\n\nReady to delete : " + _referenceVertex);
 				
 				RexsterApplicationGraph rag = _context.getRexsterApplicationGraph();
 				TransactionalGraph graph = (TransactionalGraph) rag.getGraph();
 
-				try {
-					
-					refVertex = ManagementIndexHelper.getReferenceVertex(graph, true);
-					logger.debug(sMETHOD + "\n\n\n\n Found vertex #" + refVertex.getId());
-
-				} catch (ReferenceNodeNotFoundException rvnfex) {
-					
-					String msg = rvnfex.getLocalizedMessage();
-					logger.error(sMETHOD + "\n\n\n\n" + msg);
-					jsonRslt.put("message", msg);
-				}
+				refVertex = ManagementIndexHelper.getReferenceVertex(graph, true);
+				logger.debug(sMETHOD + "\n\n\n\n Found vertex #" + refVertex.getId());
 				
-				jsonRslt.put("behaviour", "DELETE");
+				jsonRslt.put("behaviour", "DELETE record");
 				
 			} catch (JSONException e) {
 				e.printStackTrace();

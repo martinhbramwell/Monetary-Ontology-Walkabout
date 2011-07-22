@@ -151,9 +151,12 @@
 		<copy file="${LOGBACK_CORE_JAR_DIR}/${LOGBACK_CORE_JAR}-${LOGBACK_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 		<copy file="${LOGBACK_CLASSIC_JAR_DIR}/${LOGBACK_CLASSIC_JAR}-${LOGBACK_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 
-		<echo message="Try to delete ${REXSTER_LIB}/slf4j*"/>
+		<echo message="Try to delete ${REXSTER_LIB}/slf4j*.jar"/>
 		<echo message="-=-=-=-=-=-=[ delete obsolete slf4j-api.jar ]-=-=-=-=-=-"/>
-		<delete file="${REXSTER_LIB}/slf4j*" failonerror="true"/>
+		<!-- delete failonerror="true" quiet="false" defaultexcludes="no" -->
+		<delete quiet="true">
+			<fileset dir="${REXSTER_LIB}" includes="**/slf4j*"/>
+		</delete>
 		
 		<echo message=""/>
 		<echo message="-=-=-=-=-=-[ Copy SLF4J jar to their lib dir ]=-=-=-=-="/>

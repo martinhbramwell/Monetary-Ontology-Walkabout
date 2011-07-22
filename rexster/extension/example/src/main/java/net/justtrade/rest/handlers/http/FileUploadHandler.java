@@ -61,10 +61,10 @@ public class FileUploadHandler {
 		String msg = "";
 		HttpServletRequest request = _context.getRequest();
 
-		msg = "Not Multipart Content! Will process as PUT of a single file.";
+		msg = "Not Multipart Content! Will process as a single file.";
 		logger.info(sMETHOD + msg);
 
-		jsonRslt.put("PUT or POSTbehaviour", msg);
+		jsonRslt.put("PUT or POST behaviour", msg);
 		filesDetails = new JSONObject();
 		fileDetails = new JSONObject();
 

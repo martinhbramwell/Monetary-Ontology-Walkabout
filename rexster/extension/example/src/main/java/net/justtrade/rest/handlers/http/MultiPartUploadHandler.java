@@ -53,9 +53,9 @@ public class MultiPartUploadHandler extends UploadHandler {
 		
 		File dirTmp = new File(_configurationProperties.get(TEMP_FILES) + "/");
 		
-		msg = "Detected Multipart Content! Will process as POST of one or more files.";
+		msg = "Detected Multipart Content! Will process one or more files.";
 		logger.info(sMETHOD + msg);
-		_json.put("PUT or POSTbehaviour", msg);
+		_json.put("PUT or POST behaviour", msg);
 		
 		filesDetails = new JSONObject();
 

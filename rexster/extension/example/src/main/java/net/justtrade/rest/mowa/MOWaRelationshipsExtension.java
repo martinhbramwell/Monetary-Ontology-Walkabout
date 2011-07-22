@@ -85,7 +85,7 @@ public class MOWaRelationshipsExtension extends MOWaExtensionAbstract {
     @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, path = "relationships", method = HttpMethod.GET)
     @ExtensionDescriptor(description = "This gives access to the 'relationships' path, with HttpMethod.GET.")
     public ExtensionResponse doGetOther(@RexsterContext Graph graph){
-        return toStringIt(graph, "GET relationships");
+        return toStringIt(graph, "GET Steven's family relationships");
     }
 
     @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, path = "relationships", method = HttpMethod.POST)
