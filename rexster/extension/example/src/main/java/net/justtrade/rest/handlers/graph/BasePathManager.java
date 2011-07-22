@@ -86,6 +86,7 @@ public class BasePathManager {
 		final String sMETHOD = "delete(RexsterResourceContext, ExtensionAbstract, String) :\n";
 		
 		logger.info(sMETHOD + "Preparing delete : ");
+		logger.debug(sMETHOD + "We're at DEBUG level.");
 		
 		configurationProperties = initConfig(_context, _extension);
 		if (configurationProperties == null) {

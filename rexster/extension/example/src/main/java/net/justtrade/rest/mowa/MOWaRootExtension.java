@@ -4,12 +4,17 @@ import java.util.ArrayList;
 
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.justtrade.rest.handlers.graph.BasePathManager;
 import net.justtrade.rest.handlers.graph.MultipleReferenceNodesException;
 import net.justtrade.rest.handlers.graph.ReferenceNodeNotFoundException;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 
 import com.tinkerpop.rexster.RexsterApplicationGraph;
 import com.tinkerpop.rexster.RexsterResourceContext;
@@ -112,6 +117,13 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 		final String sMETHOD = "putBasePath(RexsterResourceContext) :\n";
 		logger.info(sMETHOD + COMMENT);
 		
+		
+	    // assume SLF4J is bound to logback in the current environment
+	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+	    // print logback's internal status
+	    StatusPrinter.print(lc);
+		
+		
 		long startTime = System.currentTimeMillis();
 		logger.info(sMETHOD + "Time now (start) : " + startTime);
 		
@@ -157,11 +169,12 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 	@ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.DELETE)
 	@ExtensionDescriptor(description = "DELETE all the 'Stevens' family ontology, with HttpMethod.DELETE")
 	public ExtensionResponse deleteBasePath (@RexsterContext RexsterResourceContext context
-				, @ExtensionRequestParameter(name = "refVertex", description = "Delete all nodes connected to refVertex") String refVertex
+		, @ExtensionRequestParameter(name = "refVertex", description = "Delete all nodes connected to refVertex") String refVertex
 			)
 	{
 		final String sMETHOD = "deleteBasePath(RexsterResourceContext) :\n";
-		logger.info(sMETHOD + COMMENT);
+		logger.info(sMETHOD + COMMENT + "Are we at DEBUG level?");
+		logger.debug(sMETHOD + "We're at DEBUG level.");
 		
         ExtensionMethod extMethod = context.getExtensionMethod();
         String msg = "internal error -- ";
@@ -178,12 +191,11 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 			return manager.delete(context, this, refVertex);
 			
 		} catch (ReferenceNodeNotFoundException e) {
-            msg += "could not create vertex";
+            msg += "could not find reference vertex";
 		} catch (MultipleReferenceNodesException e) {
-            msg += "can't distinguish unique reference index.";
+            msg += "can't distinguish unique reference index; duplicates!";
 		}
         return ExtensionResponse.error(msg, null, status, null, generateErrorJson(extMethod.getExtensionApiAsJson()));
 	}
-
     
 }

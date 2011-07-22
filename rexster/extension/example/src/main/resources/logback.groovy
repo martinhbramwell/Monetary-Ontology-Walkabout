@@ -20,10 +20,13 @@ import static ch.qos.logback.classic.Level.TRACE
 
 appender("STDOUT", ConsoleAppender) {
   encoder(PatternLayoutEncoder) {
-//    pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%msg%n"
-    pattern = "[%thread] %-5level %logger{36}.%msg%n"
+    pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%msg%n"
+//    pattern = "[%thread] %-5level %logger{36}.%msg%n"
   }
 }
 
-// logger("com.base22", TRACE)
-root(DEBUG, ["STDOUT"])
+root(INFO, ["STDOUT"])
+
+logger("net.justtrade.rest.mowa", INFO)
+logger("net.justtrade.rest.handlers.graph.BasePathManager", DEBUG)
+
