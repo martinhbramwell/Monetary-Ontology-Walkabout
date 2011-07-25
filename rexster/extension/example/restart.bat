@@ -81,7 +81,7 @@ echo --------------------------------------------------
 echo -------------[ DELETE Stevens Family. ]-----------
 echo --------------------------------------------------
 echo .
-curl %VERBOSE% -d "refVertex=ABCDEFG" -SX DELETE "http://localhost:8182/neo4jsample/mowa/stevens/" | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+curl %VERBOSE% -d "refVertex=mowa.stevens.20110723180922" -SX DELETE "http://localhost:8182/neo4jsample/mowa/stevens/" | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo.
 echo .
 

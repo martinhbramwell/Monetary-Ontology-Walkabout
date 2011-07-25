@@ -98,6 +98,7 @@ public class RDF_Loader {
 				
 			} catch (Exception ex) {
 				logger.error(sMETHOD + " * * *  Hit an exception on triple " + triple + "\n" + ex.getStackTrace());
+				ex.printStackTrace();
 			}
 		}
 		logger.info(sMETHOD + " * * * Stopping Transaction * * * ");

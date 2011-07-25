@@ -1,6 +1,9 @@
 package net.justtrade.rest.handlers.graph;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,9 +27,12 @@ public class ManagementIndexHelper {
 
 	public static final String MANAGEMENT_INDEX_NAME = "mgmnt";
 	public static final String MANAGEMENT_NODES_KEY = "mngd";
+	public static final String MANAGEMENT_NODES_KEY_SEQ = "mngdSeq";
 	public static final String REFERENCE_NODE = "referenceVertex";
 
 	private static final Logger logger = LoggerFactory.getLogger(ManagementIndexHelper.class);
+	
+	private static Map<String, Vertex> referenceVertices = new HashMap<String, Vertex>();
 
 	/**
 	 * Delete a collection of nodes bound to a single root reference node.
@@ -89,7 +95,7 @@ public class ManagementIndexHelper {
 			idx = ((IndexableGraph)_graph).getIndex(MANAGEMENT_INDEX_NAME, Vertex.class);
 			if (null == idx) throw new CollectionIndexNotFoundException(_refNodeName);
 			
-			vertices = idx.get(MANAGEMENT_INDEX_NAME, _refNodeName);
+			vertices = idx.get(MANAGEMENT_NODES_KEY, _refNodeName);
 			if (null == vertices) throw new ReferenceNodeNotFoundException(_refNodeName);
 			
 		} catch (NullPointerException rtex) {
@@ -239,69 +245,99 @@ public class ManagementIndexHelper {
 		throws ReferenceNodeNotFoundException, MultipleReferenceNodesException
 	{ 
 		final String sMETHOD = "getReferenceVertex(String, String, String, TransactionalGraph, boolean) --> ";
-		long refVertexId;
-		CloseableSequence<Vertex> vertices = null;
-		Vertex refVertex = null;
-		Index<Vertex> index = null;
+		
+		Vertex refVertex = referenceVertices.get(_refNodeName);
+		
+		if (refVertex == null )
+		{
+			long refVertexId;
+			CloseableSequence<Vertex> vertices = null;
+			Index<Vertex> index = null;
 
-		logger.debug(sMETHOD + "Find vertex with property : " 
-				+ "\n    Key '" + _refNodeKey + "' = value '" + _refNodeName + "' in "
-				+ "\n    Index " + _refIndxName + "."
-				+ "\n    Make one ? " + _makeIfNotFound + "."
-				+ "\n    (Graph " + ((_graph == null)  ?  "not found"  :  _graph.toString()) + ").");
-		
-		logger.debug(sMETHOD + "Possibly there's no index, if not make one."); 
-		try {
-			index = ((IndexableGraph)_graph).getIndex(_refIndxName, Vertex.class);
-		} catch (RuntimeException rtex) {
-			String msg = rtex.getLocalizedMessage();
-			int pos = msg.indexOf("No such index");
-			if (-1 < pos) {
-				index = null;
-			} else {
-				logger.warn("(" + pos + ")" + rtex.getLocalizedMessage());
-				rtex.printStackTrace();
-			}
-		}
-		if (index == null) {
-			logger.info(sMETHOD + "No index : " + _refIndxName + ". Creating now."); 
-			index = ((IndexableGraph)_graph).createManualIndex(_refIndxName, Vertex.class);
-			logger.debug(sMETHOD + "New index : " + _refIndxName + ". "); 
-		}
-		
-		
-		
-		logger.debug(sMETHOD + "Got an index to work with. Look for property -- key : '" + _refNodeKey + "' ; '" + _refNodeName + "'."); 
-		long cnt = index.count(_refNodeKey, _refNodeName);
-		if (cnt == 1) {
+			logger.debug(sMETHOD + "Find vertex with property : " 
+					+ "\n    Key '" + _refNodeKey + "' = value '" + _refNodeName + "' in "
+					+ "\n    Index " + _refIndxName + "."
+					+ "\n    Make one ? " + _makeIfNotFound + "."
+					+ "\n    (Graph " + ((_graph == null)  ?  "not found"  :  _graph.toString()) + ").");
 			
-			logger.debug(sMETHOD + "Found a vertex."); 
-			vertices = index.get(_refNodeKey, _refNodeName);
-			for (Vertex vtex : vertices) {
-				refVertex = vtex;
+			logger.debug(sMETHOD + "Possibly there's no index, if not make one."); 
+			try {
+				index = ((IndexableGraph)_graph).getIndex(_refIndxName, Vertex.class);
+			} catch (RuntimeException rtex) {
+				String msg = rtex.getLocalizedMessage();
+				int pos = msg.indexOf("No such index");
+				if (-1 < pos) {
+					index = null;
+				} else {
+					logger.warn("(" + pos + ")" + rtex.getLocalizedMessage());
+					rtex.printStackTrace();
+				}
 			}
-			logger.debug(sMETHOD + "Found reference vertex ? " + ((refVertex == null)  ?  "no"  :  "yes")); 
-			vertices.close();
+			if (index == null) {
+				logger.info(sMETHOD + "No index : " + _refIndxName + ". Creating now."); 
+				index = ((IndexableGraph)_graph).createManualIndex(_refIndxName, Vertex.class);
+				logger.debug(sMETHOD + "New index : " + _refIndxName + ". "); 
+			}
 			
-		} else if (cnt < 1) { 
-			if (_makeIfNotFound) {
+			
+			
+			logger.debug(sMETHOD + "Got an index to work with. Look for property -- key : '" + _refNodeKey + "' ; '" + _refNodeName + "'."); 
+			long cnt = index.count(_refNodeKey, _refNodeName);
+			logger.debug(sMETHOD + "Index items count '" + cnt + "'."); 
+			if (cnt < 1) { 
+				if (_makeIfNotFound) {
 
-				logger.debug(sMETHOD + "Creating reference vertex named '" + _refNodeName + "'.");
-				
-				refVertex = IndexableGraphHelper.addUniqueVertex(((IndexableGraph)_graph), null, index, _refNodeKey, _refNodeName);
-				index.put(_refNodeKey, _refNodeName, refVertex);
-				refVertexId = ((Long) refVertex.getId()).longValue();
+					logger.debug(sMETHOD + "Creating reference vertex named '" + _refNodeName + "'.");
+					
+					refVertex = IndexableGraphHelper.addUniqueVertex(((IndexableGraph)_graph), null, index, _refNodeKey, _refNodeName);
+					refVertex.setProperty(MANAGEMENT_NODES_KEY_SEQ, new Long(0));
+					index.put(_refNodeKey, _refNodeName, refVertex);
+					refVertexId = ((Long) refVertex.getId()).longValue();
+					
+					referenceVertices.put(_refNodeName, refVertex);
 
-				logger.debug(sMETHOD + "Created reference vertex # '" + refVertexId + "' named '" + refVertex.toString() + "'.");
-				
+					logger.debug(sMETHOD + "Created reference vertex # '" + refVertexId + "' named '" + refVertex.toString() + "'.");
+					
+				} else {
+					throw new ReferenceNodeNotFoundException(_refNodeKey + ":" + _refNodeName);
+				}
 			} else {
-				throw new ReferenceNodeNotFoundException(_refNodeKey + ":" + _refNodeName);
+				
+				logger.debug(sMETHOD + "Found a vertex."); 
+				vertices = index.get(_refNodeKey, _refNodeName);
+				logger.debug(sMETHOD + "A."); 
+				boolean bNoRefernceVertex = true;
+				for (Vertex vtex : vertices) {
+					logger.debug(sMETHOD + "B."); 
+					Object prop = vtex.getProperty(MANAGEMENT_NODES_KEY_SEQ); 
+					if (prop == null)
+					{
+						logger.debug(sMETHOD + "NULL property " + MANAGEMENT_NODES_KEY_SEQ);
+					} else if (!(prop instanceof Long))
+					{
+						logger.debug(sMETHOD + "Not a Long :: " + prop.getClass().getName() + "(" + prop.toString() + ").");
+					} else if (((Long) prop).longValue() != 0)
+					{
+						logger.debug(sMETHOD + "Long but not 0.");
+					} else {
+						refVertex = vtex;
+						bNoRefernceVertex = false;
+					}
+					
+//					if (   (prop != null)   &&   (prop instanceof Long)   &&   (((Long) prop).longValue() == 0)   ) 
+//					{
+//					}
+					
+				}
+				if (bNoRefernceVertex) throw new ReferenceNodeNotFoundException(_refNodeKey + ":" + _refNodeName);
+				logger.debug(sMETHOD + "Found reference vertex ? " + ((refVertex == null)  ?  "no"  :  "yes")); 
+				vertices.close();
+				
 			}
 		} else {
-			throw new MultipleReferenceNodesException();
+			logger.debug(sMETHOD + "Found previously. Done.");
 		}
-		
-		logger.debug(sMETHOD + " Done.");
+
 		
 		return refVertex;
 	}
@@ -321,9 +357,10 @@ public class ManagementIndexHelper {
 		logger.debug(sMETHOD + " Add to management index...");
 		
 		String managerNodeName = _managerVertex.getProperty(MANAGEMENT_NODES_KEY).toString();
+		Long indxSeq = (Long) _managedVertex.getId();
 		Object managementId = managerNodeName + ":" + _managedVertex.getId().toString();
 
-		logger.debug(sMETHOD + " ... identified by : key '" + MANAGEMENT_NODES_KEY + "' -- value '" + managementId + "'.");
+		logger.debug(sMETHOD + " ... identified by : key '" + MANAGEMENT_NODES_KEY + "' -- value '" + managerNodeName + "'.");
 		try {
 			
 			if (_graph == null) throw new Exception("No graph.");
@@ -331,11 +368,12 @@ public class ManagementIndexHelper {
 			Index<Vertex> idxMgmnt = ((IndexableGraph)_graph).getIndex(MANAGEMENT_INDEX_NAME, Vertex.class);
 			if (idxMgmnt == null) throw new Exception("No index.");
 			
-			logger.debug(sMETHOD + "Setting management properties ...");
-			_managedVertex.setProperty(MANAGEMENT_NODES_KEY, managementId);
+			logger.debug(sMETHOD + "Setting management properties ...\n" + "Key : " + MANAGEMENT_NODES_KEY + " = value : " + managerNodeName + "\nKey : " + MANAGEMENT_NODES_KEY_SEQ + " = value : " + managementId);
+			_managedVertex.setProperty(MANAGEMENT_NODES_KEY, managerNodeName);
+			_managedVertex.setProperty(MANAGEMENT_NODES_KEY_SEQ, indxSeq);
 			
-			logger.debug(sMETHOD + "... adding to index.");
-			idxMgmnt.put(MANAGEMENT_NODES_KEY, managementId, _managedVertex);
+			logger.debug(sMETHOD + "... adding to index named : " + MANAGEMENT_INDEX_NAME + " with key " + MANAGEMENT_NODES_KEY);
+			idxMgmnt.put(MANAGEMENT_NODES_KEY, managerNodeName, _managedVertex);
 			
 			logger.debug(sMETHOD + "... and connecting to manager node.");
 			StructureHelper.connect(_managerVertex, _managedVertex

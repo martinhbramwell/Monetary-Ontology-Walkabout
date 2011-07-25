@@ -16,6 +16,7 @@ import com.tinkerpop.rexster.RexsterResourceContext;
 import com.tinkerpop.rexster.extension.ExtensionResponse;
 
 import net.justtrade.rest.util.FileWriteException;
+import net.justtrade.rest.util.JSONHelper;
 
 
 /**
@@ -44,6 +45,7 @@ public class UploadHandler {
 	public ExtensionResponse handleUpload(Map<String, String> _names, RexsterResourceContext _context)
 	{
 		final String sMETHOD = "handleUpload() --> ";
+		String msg = "";
 		
 		HttpServletRequest request = _context.getRequest();
 		
@@ -54,29 +56,39 @@ public class UploadHandler {
 			// Distinguish multi-part from single file upload request
 			if (isMultipart)
 			{
+				json.put("uploadType", "multipart");
 				return MultiPartUploadHandler.handleUpload(_names, _context, json);
 				
 			} else {
 				
+				json.put("uploadType", "single");
 				return FileUploadHandler.handleUpload(_names, _context, json);
 				
 			}
 		} catch (JSONException jsonex) {
-			logger.error(sMETHOD + "* * * Invalid JSON * * * \n" + jsonex.getLocalizedMessage());
+			msg = "* * * Invalid JSON * * * \n" + jsonex.getLocalizedMessage();
+			logger.error(sMETHOD + msg);
+			return ExtensionResponse.error(jsonex, JSONHelper.put(json, "failure", msg));
+			
 		} catch (FileWriteException ioex) {
-			logger.error(sMETHOD + "* * * File Write Failure * * * \n" + ioex.getLocalizedMessage());
+			msg = "* * * File Write Failure * * * \n" + ioex.getLocalizedMessage();
+			logger.error(sMETHOD + msg);
 			logger.error(sMETHOD + "Does the directory " + _names.get(TEMP_FILES) + " exist?\n" + ioex.getLocalizedMessage());
 			logger.error(sMETHOD + "Does the directory " + _names.get(GRAPH_ARCHIVE) + " exist?\n" + ioex.getLocalizedMessage());
+			logger.error(sMETHOD + msg);
+			return ExtensionResponse.error(ioex, JSONHelper.put(json, "failure", msg));
 
 		} catch (FileUploadException fuex) {
-			logger.error(sMETHOD + "* * * File Upload Failure * * * \n" + fuex.getLocalizedMessage());
+			msg = "* * * File Upload Failure * * * \n" + fuex.getLocalizedMessage();
+			logger.error(sMETHOD + msg);
+			return ExtensionResponse.error(fuex, JSONHelper.put(json, "failure", msg));
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error(sMETHOD + "* * * Input/output problem with upload file * * * \n" + ex.getLocalizedMessage());
+			msg = "* * * Input/output problem with upload file * * * \n" + ex.getLocalizedMessage();
+			logger.error(sMETHOD + msg);
+			return ExtensionResponse.error(ex, JSONHelper.put(json, "failure", msg));
 		}
-
-		
-		return ExtensionResponse.ok(json);
 		
 	}
 
