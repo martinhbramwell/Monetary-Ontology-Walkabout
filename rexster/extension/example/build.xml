@@ -44,6 +44,10 @@
 	<property name="LOGBACK_CLASSIC_JAR_DIR" value="${M2_REPO}/ch/qos/logback/${LOGBACK_CLASSIC_JAR}/${LOGBACK_JAR_VERSION}"/>
 	
 	<property name="resources" location="src/main/resources"/>
+	<property name="src" location="src/main/java"/>
+	<property name="javadoc" location="target/site/umldocs"/>
+	<property name="lib" location="${M2_REPO}/org/umlgraph/5.4"/>
+	
 	<property name="target" location="target"/>
 	
 	<condition property="isUnix">
@@ -87,6 +91,27 @@
          classpathref="support.classes"/>
 	
 	
+	<target name="javadocs">
+	        <javadoc 
+	        	sourcepath="${src}" 
+	        	packagenames="net.justtrade.rest.*" 
+	        	destdir="${javadoc}"
+	        	private="true">
+	                <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${lib}/UmlGraph-5.4.jar">
+	                        <param name="-inferrel"/>
+	                        <param name="-inferdep"/>
+	                        <param name="-hide" value="java.*"/>
+	                        <param name="-collpackages" value="java.util.*"/>
+	                        <param name="-qualify"/>
+	                        <param name="-postfixpackage"/>
+	                        <param name="-nodefontsize" value="9"/>
+	                        <param name="-nodefontpackagesize" value="7"/>
+	                        <param name="-link" value="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec"/>
+	                        <param name="-link" value="http://java.sun.com/j2se/1.5/docs/api"/>
+	                </doclet>
+	        </javadoc>
+	</target>
+	
 	<target name="test" description="test the result" >
 		
 		<groovy classpath="./target/classes" >
@@ -114,6 +139,7 @@
 		<echo message="-=[ Make sure our config files are newer than theirs ]-="/>
 		<touch file="${resources}/config/myRexster.xml"/>
 		<touch file="${resources}/config/rexster-restart.bat"/>
+		<touch file="${resources}/config/MOWa-restart.bat"/>
 		
 		<echo message=""/>
 		<echo message="-=-=-=-=-[ Create directories where necessary ]-=-=-=-=-"/>
@@ -125,6 +151,7 @@
 		<echo message="-=-=-=-=-[ Copy myRexster.xml to rexster root ]-=-=-=-=-"/>
 		<copy file="${resources}/config/myRexster.xml" todir="${REXSTER_HOME}" />
 		<copy file="${resources}/config/rexster-restart.bat" todir="${REXSTER_HOME}" />
+		<copy file="${resources}/config/MOWa-restart.bat" todir="${REXSTER_HOME}" />
 		
 		<echo message=""/>
 		<echo message="-=-=-=-=[ Copy fileUpload jar to their lib dir ]-=-=-=-="/>

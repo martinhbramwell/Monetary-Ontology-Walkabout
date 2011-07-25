@@ -18,7 +18,7 @@ echo start /I "Restarting Rexster" /D %REXSTERDIR% rexster-restart.bat  -configu
 start /I "Restarting Rexster" /D %REXSTERDIR% rexster-restart.bat  -configuration myRexster.xml
 echo .
 echo --------------------------------------------------
-echo --------[ Wait 8 secs for full start up ]--------
+echo --------[ Wait 8 secs for full start up ]---------
 echo --------------------------------------------------
 echo .
 PING 1.1.1.1 -n 1 -w 8000 >NUL
@@ -45,7 +45,7 @@ echo curl -sv http://localhost:8182/neo4jsample/mowa/stevens/relationships
 curl -s http://localhost:8182/neo4jsample/mowa/stevens/relationships | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
 echo .
 echo --------------------------------------------------
-echo -----------[ Check original Path ]-----------
+echo -----------[ Check original Path ]----------------
 echo --------------------------------------------------
 echo .
 echo curl -sv http://localhost:8182/neo4jsample/mowa/stevens/some-work

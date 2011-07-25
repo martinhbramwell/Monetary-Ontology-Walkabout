@@ -4,13 +4,12 @@ import java.util.ArrayList;
 
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.justtrade.rest.handlers.graph.BasePathManager;
-import net.justtrade.rest.handlers.graph.MultipleReferenceNodesException;
+import net.justtrade.rest.handlers.graph.CollectionIndexNotFoundException;
 import net.justtrade.rest.handlers.graph.ReferenceNodeNotFoundException;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -188,12 +187,13 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 
 		BasePathManager manager = new BasePathManager(); 
 		try {
+			
 			return manager.delete(context, this, refVertex);
 			
 		} catch (ReferenceNodeNotFoundException e) {
-            msg += "could not find reference vertex";
-		} catch (MultipleReferenceNodesException e) {
-            msg += "can't distinguish unique reference index; duplicates!";
+            msg += "could find no such reference vertex.";
+		} catch (CollectionIndexNotFoundException e) {
+            msg += "could find no index for this collection.";
 		}
         return ExtensionResponse.error(msg, null, status, null, generateErrorJson(extMethod.getExtensionApiAsJson()));
 	}

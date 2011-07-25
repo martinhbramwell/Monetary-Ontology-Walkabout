@@ -10,7 +10,6 @@ import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONException;
 
 import com.tinkerpop.blueprints.pgm.TransactionalGraph;
-import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.rexster.RexsterApplicationGraph;
 import com.tinkerpop.rexster.RexsterResourceContext;
 import com.tinkerpop.rexster.extension.ExtensionConfiguration;
@@ -29,9 +28,6 @@ public class BasePathManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(BasePathManager.class);
 	
-	private Vertex refVertex = null;
-//	private long refVertexId = -1;
-
 	private Map<String, String> configurationProperties;
 	
 	
@@ -81,12 +77,14 @@ public class BasePathManager {
      * @see BasePathManager
      */
 	public ExtensionResponse delete(RexsterResourceContext _context, ExtensionAbstract _extension, String _referenceVertex)
-	throws ReferenceNodeNotFoundException, MultipleReferenceNodesException
+	throws ReferenceNodeNotFoundException, CollectionIndexNotFoundException
 	{
 		final String sMETHOD = "delete(RexsterResourceContext, ExtensionAbstract, String) :\n";
 		
 		logger.info(sMETHOD + "Preparing delete : ");
 		logger.debug(sMETHOD + "We're at DEBUG level.");
+		
+		Long numVertices = new Long(0);
 		
 		configurationProperties = initConfig(_context, _extension);
 		if (configurationProperties == null) {
@@ -100,14 +98,14 @@ public class BasePathManager {
 			try {
 				
 				logger.debug(sMETHOD + "\n\n\n\nReady to delete : " + _referenceVertex);
-				
-				RexsterApplicationGraph rag = _context.getRexsterApplicationGraph();
-				TransactionalGraph graph = (TransactionalGraph) rag.getGraph();
-
-				refVertex = ManagementIndexHelper.getReferenceVertex(graph, true);
-				logger.debug(sMETHOD + "\n\n\n\n Found vertex #" + refVertex.getId());
-				
-				jsonRslt.put("behaviour", "DELETE record");
+				numVertices = ManagementIndexHelper.deleteVertexCollection
+								(
+										  _referenceVertex
+										, (TransactionalGraph) _context.getRexsterApplicationGraph().getGraph()
+								);
+					
+				String msg = "DELETEd " + numVertices.toString() + ((numVertices==1)  ?  " vertex"  :  " vertices.");
+				jsonRslt.put("behaviour", msg);
 				
 			} catch (JSONException e) {
 				e.printStackTrace();

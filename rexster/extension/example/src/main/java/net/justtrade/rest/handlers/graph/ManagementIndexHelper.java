@@ -28,6 +28,87 @@ public class ManagementIndexHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(ManagementIndexHelper.class);
 
+	/**
+	 * Delete a collection of nodes bound to a single root reference node.
+	 * @param _refNodeName The value to be indexed by the management index
+	 * @param _graph the reference to the graph to be accessed.
+	 * @return a Set of vertex IDs all directly related by a single reference node.
+	 * @throws Exception if thrown.
+	 */
+	public static Long deleteVertexCollection 
+	(		  String _refNodeName
+			, TransactionalGraph _graph
+	) throws ReferenceNodeNotFoundException, CollectionIndexNotFoundException
+	{ 
+		final String sMETHOD = "deleteVertexCollection(String, TransactionalGraph) --> ";
+		logger.info(sMETHOD + " Starting.");
+		
+		long cnt = 0;
+		
+		CloseableSequence<Vertex> itr = getVertexCollection(_refNodeName, _graph);
+		for ( Vertex vtx : itr) {
+			
+			logger.info(sMETHOD + " Murdering vertex " + vtx + "and all connected adges.");
+			_graph.removeVertex(vtx);
+			cnt++;
+		}
+		
+		logger.info(sMETHOD + " Done.");
+		return new Long(cnt);
+	}
+
+
+
+	/**
+	 * Get a collection of nodes bound to a single root reference node.
+	 * @param _refNodeName The value to be indexed by the management index
+	 * @param _graph the reference to the graph to be accessed.
+	 * @return a Set of vertex IDs all directly related by a single reference node.
+	 * @throws Exception if thrown.
+	 */
+	public static CloseableSequence<Vertex> getVertexCollection 
+	(		  String _refNodeName
+			, TransactionalGraph _graph
+	) throws ReferenceNodeNotFoundException, CollectionIndexNotFoundException
+	{ 
+		final String sMETHOD = "getVertexCollection(String, TransactionalGraph) --> ";
+		logger.info(sMETHOD + " Starting.");
+		
+		Index<Vertex> idx = null;
+		CloseableSequence<Vertex> vertices = null;
+		
+		if (logger.isDebugEnabled()) {
+			for(Index<?> index : ((IndexableGraph)_graph).getIndices())
+			{
+				logger.info(sMETHOD + " Index " + index.getIndexName());
+			}
+		}
+
+		try 
+		{
+			idx = ((IndexableGraph)_graph).getIndex(MANAGEMENT_INDEX_NAME, Vertex.class);
+			if (null == idx) throw new CollectionIndexNotFoundException(_refNodeName);
+			
+			vertices = idx.get(MANAGEMENT_INDEX_NAME, _refNodeName);
+			if (null == vertices) throw new ReferenceNodeNotFoundException(_refNodeName);
+			
+		} catch (NullPointerException rtex) {
+			
+			throw new ReferenceNodeNotFoundException(_refNodeName);
+			
+		} catch (RuntimeException rtex) {
+			
+			throw new CollectionIndexNotFoundException(_refNodeName);
+			
+			
+		}
+		
+		
+		logger.info(sMETHOD + " Done.");
+		return vertices;
+	}
+
+
 
 	/**
 	 * Get a collection reference node if already available, otherwise possibly create it.

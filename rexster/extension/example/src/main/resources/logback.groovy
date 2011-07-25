@@ -29,4 +29,6 @@ root(INFO, ["STDOUT"])
 
 logger("net.justtrade.rest.mowa", INFO)
 logger("net.justtrade.rest.handlers.graph.BasePathManager", DEBUG)
+logger("net.justtrade.rest.handlers.graph.ManagementIndexHelper", DEBUG)
+
 
