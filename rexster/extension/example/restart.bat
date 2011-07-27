@@ -50,6 +50,12 @@ curl %VERBOSE% http://localhost:8182/neo4jsample | groovy -e "println(groovy.jso
 echo.
 echo .
 echo --------------------------------------------------
+echo -------[ GET graph root. req=mowa.stevens]--------
+echo --------------------------------------------------
+echo .
+curl %VERBOSE% http://localhost:8182/neo4jsample/mowa/stevens?req=mowa.stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+echo .
+echo --------------------------------------------------
 echo ----------------[ GET graph root. ]---------------
 echo --------------------------------------------------
 echo .
@@ -75,6 +81,8 @@ echo --------------[ PUT Stevens Family. ]-------------
 echo --------------------------------------------------
 echo .
 curl %VERBOSE% -T .\src\main\resources\data\theStevens.owl  -H "Content-Type: text/plain"  http://localhost:8182/neo4jsample/mowa/stevens | groovy -e "println(groovy.json.JsonOutput.prettyPrint(System.in.text))" | more
+
+goto :EOF
 echo.
 echo .
 echo --------------------------------------------------
