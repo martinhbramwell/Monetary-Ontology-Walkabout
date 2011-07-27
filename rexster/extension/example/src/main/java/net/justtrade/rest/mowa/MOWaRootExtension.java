@@ -1,10 +1,14 @@
 package net.justtrade.rest.mowa;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+
+import groovy.json.JsonOutput;
 
 import javax.ws.rs.core.Response;
 
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +19,6 @@ import net.justtrade.rest.handlers.graph.ReferenceNodeNotFoundException;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
-import com.tinkerpop.rexster.RexsterApplicationGraph;
 import com.tinkerpop.rexster.RexsterResourceContext;
 import com.tinkerpop.rexster.extension.ExtensionMethod;
 import com.tinkerpop.rexster.extension.ExtensionNaming;
@@ -81,22 +84,54 @@ public class MOWaRootExtension extends MOWaExtensionAbstract {
 
     @ExtensionDefinition(extensionPoint = ExtensionPoint.GRAPH, method = HttpMethod.GET)
 	@ExtensionDescriptor(description = "GETs the options available for the 'Stevens' family ontology, with HttpMethod.GET.")
-    public ExtensionResponse getBasePath(@RexsterContext RexsterResourceContext context) {
+//    public ExtensionResponse getBasePath(@RexsterContext RexsterResourceContext context)
+	public ExtensionResponse getBasePath
+	(
+			  @RexsterContext RexsterResourceContext context
+			, @ExtensionRequestParameter(name = "req", description = "Indicate the kind of data required") String req
+	)
+    {
 		final String sMETHOD = "getBasePath(RexsterResourceContext) :\n";
-		final String REST_PATH = "GET graph's root";
+		logger.info(sMETHOD + COMMENT);
 
-		logger.info(sMETHOD + COMMENT);		
-		ArrayList<String> hateaos = new ArrayList<String>();
-		hateaos.add("\"title\": \"List available persons.\" \"href\": \"" + basePath + "/persons\"" + REST_PATH);
-		hateaos.add("\"title\": \"List available relationships.\" \"href\": \"" + basePath + "/relationships\"" + REST_PATH);
-		RexsterApplicationGraph rag = context.getRexsterApplicationGraph();
+		try {
+			if ((req==null) || req.equals("")) {
+				
+				JSONObject jsonRslt = new JSONObject();
+				JSONObject persons = new JSONObject();
+				JSONObject relationships = new JSONObject();
 
-		logger.info(sMETHOD + "RexsterResourceContext :: getRequestObject " + context.getRequestObject().toString());
-		return toStringIt(rag.getGraph(), REST_PATH, hateaos);
-		
-//		BasePathManager manager = new BasePathManager(); 
-//		return manager.get(context, this);
+				persons.put("persons", new JSONObject().put("title", "List available persons.").accumulate("href", basePath + "/persons"));
+				relationships.put("relationships", new JSONObject().put("title", "List available relationships.").accumulate("href", basePath + "/relationships"));
+				
+				jsonRslt.put("paths", persons);
+				jsonRslt.accumulate("paths", relationships);
+				logger.info("\nJSON : " + JsonOutput.prettyPrint(jsonRslt.toString()));
+							
+				return ExtensionResponse.ok(jsonRslt);
+				
+			} else {
+				
+				JSONObject rslt = new JSONObject();
+				
+				logger.info(sMETHOD + COMMENT + " req = " + req);
+				try {
+					rslt.put("req", req);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return ExtensionResponse.ok(rslt);
+				
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Something wrong", "");
 
+		return ExtensionResponse.ok(map);
     }
 
     
