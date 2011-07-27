@@ -40,6 +40,8 @@ public class RDF_Loader {
 
 	private static final Logger logger = LoggerFactory.getLogger(RDF_Loader.class);
 	private static final String FIELD_ENTITY_NAME = "name";
+	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
+	public static final String FILE_PROTOCOL = "file:" + FILE_SEPARATOR;
 	
 	/**
 	 * This method prepares the environment for loading rdf and handling failures
@@ -55,9 +57,14 @@ public class RDF_Loader {
 	{
 		final String sMETHOD = "injectRDF(String, String, RexsterResourceContext) --> ";
 		
+		String tripleFile = _tripleFile.trim();if (tripleFile.startsWith(FILE_SEPARATOR)) tripleFile = tripleFile.substring(1);
+
+		
 		TransactionalGraph tranGraph = (TransactionalGraph) _context.getRexsterApplicationGraph().getGraph();
 		
 		try {
+			
+			
 
 			logger.info(sMETHOD + "Writing " + _tripleFile + " contents to triple store.");
 			writeToGraphStore(_subRefNodeName, _tripleFile, tranGraph);
@@ -79,10 +86,16 @@ public class RDF_Loader {
 	private void writeToGraphStore (String subRefNodeName, String _tripleFile, TransactionalGraph _graph) throws MalformedURLException
 	{
 		final String sMETHOD = "writeToGraphStore(String, String, IndexableGraph) --> ";
+		logger.info(sMETHOD + "Writing :: " + FILE_PROTOCOL + _tripleFile);
+		Model model = null;
 
-		Model model = ModelFactory.createDefaultModel();
-		model.read("file:\\" + _tripleFile);
-
+		try {
+			model = ModelFactory.createDefaultModel();
+			model.read(FILE_PROTOCOL + _tripleFile);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 		logger.info(sMETHOD + " * * * Starting Transaction * * * ");
 		CommitManager tranMan = TransactionalGraphHelper.createCommitManager(_graph, 50);
 		
