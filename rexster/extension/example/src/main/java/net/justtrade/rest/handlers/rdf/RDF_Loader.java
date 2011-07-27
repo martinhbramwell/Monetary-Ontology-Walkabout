@@ -66,9 +66,9 @@ public class RDF_Loader {
 			
 			
 
-			logger.info(sMETHOD + "Writing " + _tripleFile + " contents to triple store.");
-			writeToGraphStore(_subRefNodeName, _tripleFile, tranGraph);
-			logger.info(sMETHOD + "Wrote " + _tripleFile + " contents to triple store.");
+			logger.info(sMETHOD + "Writing " + tripleFile + " contents to triple store.");
+			writeToGraphStore(_subRefNodeName, tripleFile, tranGraph);
+			logger.info(sMETHOD + "Wrote " + tripleFile + " contents to triple store.");
 			
 		} catch (MalformedURLException mfuex) {
 			logger.error(sMETHOD + "* * * Bad URL failure * * * \n" + mfuex.getLocalizedMessage() + "\n" + mfuex.getStackTrace());
