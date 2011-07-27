@@ -36,6 +36,10 @@
 	<property name="SLF4J_JAR_VERSION" value="1.6.1"/>
 	<property name="SLF4J_JAR_DIR" value="${M2_REPO}/org/slf4j/${SLF4J_JAR}/${SLF4J_JAR_VERSION}"/>
 
+	<property name="GROOVY_JAR" value="groovy"/>   <!--  .....\.m2\repository\org\codehaus\groovy\groovy\1.8.0 -->
+	<property name="GROOVY_JAR_VERSION" value="1.8.0"/>
+	<property name="GROOVY_JAR_DIR" value="${M2_REPO}/org/codehaus/groovy/${GROOVY_JAR}/${GROOVY_JAR_VERSION}"/>
+
 	<property name="LOGBACK_JAR_VERSION" value="0.9.29"/>
 	
 	<property name="LOGBACK_CORE_JAR" value="logback-core"/>   <!--  .....\.m2\repository\ch\qos\logback\logback-core\0.9.29 -->
@@ -178,9 +182,8 @@
 		<copy file="${LOGBACK_CORE_JAR_DIR}/${LOGBACK_CORE_JAR}-${LOGBACK_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 		<copy file="${LOGBACK_CLASSIC_JAR_DIR}/${LOGBACK_CLASSIC_JAR}-${LOGBACK_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 
-		<echo message="Try to delete ${REXSTER_LIB}/slf4j*.jar"/>
+		<echo message="Try to delete ${REXSTER_LIB}/slf4j*.jar "/>
 		<echo message="-=-=-=-=-=-=[ delete obsolete slf4j-api.jar ]-=-=-=-=-=-"/>
-		<!-- delete failonerror="true" quiet="false" defaultexcludes="no" -->
 		<delete quiet="true">
 			<fileset dir="${REXSTER_LIB}" includes="**/slf4j*"/>
 		</delete>
@@ -188,6 +191,16 @@
 		<echo message=""/>
 		<echo message="-=-=-=-=-=-[ Copy SLF4J jar to their lib dir ]=-=-=-=-="/>
 		<copy file="${SLF4J_JAR_DIR}/${SLF4J_JAR}-${SLF4J_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
+		
+		<echo message="Try to delete ${REXSTER_LIB}/groovy*.jar"/>
+		<echo message="-=-=-=-=-=-=[ delete obsolete groovy*.jar ]-=-=-=-=-=-"/>
+		<delete quiet="true">
+			<fileset dir="${REXSTER_LIB}" includes="**/groovy*"/>
+		</delete>
+		
+		<echo message=""/>
+		<echo message="-=-=-=-=-=-[ Copy GROOVY jar to their lib dir ]=-=-=-=-="/>
+		<copy file="${GROOVY_JAR_DIR}/${GROOVY_JAR}-${GROOVY_JAR_VERSION}.jar" todir="${REXSTER_LIB}" />
 
 		
 		
