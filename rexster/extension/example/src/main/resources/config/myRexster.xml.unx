@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rexster>
     <rexster-server-port>8182</rexster-server-port>
-    <rexster-shutdown-port>8184</rexster-shutdown-port>
+    <rexster-shutdown-port>8183</rexster-shutdown-port>
     <rexster-shutdown-host>127.0.0.1</rexster-shutdown-host>
     <rexpro-server-port>8184</rexpro-server-port>
     <rexpro-session-max-idle>1790000</rexpro-session-max-idle>
@@ -25,6 +25,20 @@
         
 	</web-server-configuration>
     <graphs>
+        <graph>
+            <graph-name>emptygraph</graph-name>
+            <graph-type>tinkergraph</graph-type>
+        </graph>
+        <graph>
+            <graph-name>tinkergraph</graph-name>
+            <graph-type>tinkergraph</graph-type>
+            <graph-file>data/graph-example-1</graph-file>
+            <extensions>
+                <allows>
+                    <allow>tp:gremlin</allow>
+                </allows>
+            </extensions>
+        </graph>
         <graph>
             <graph-enabled>true</graph-enabled>
             <graph-name>neo4jsample</graph-name>
@@ -103,38 +117,38 @@
                 <max_relationship_cache_size>3500</max_relationship_cache_size>
             </properties>
         </graph>
-        
-		<graph>
-            <graph-enabled>true</graph-enabled>
-            <graph-name>tinkergraph</graph-name>
-            <graph-type>tinkergraph</graph-type>
-            <graph-file>data/graph-example-1.xml</graph-file>
-            <extensions>
-                <allows>
-                    <allow>tp:gremlin</allow>
-					<allow>tp-sample:*</allow>
-                </allows>
-				<extension>
-				  <namespace>tp-sample</namespace>
-				  <name>map-config</name>
-				  <configuration>
-					<some-key>some-value</some-key>
-					<other-key>other-value</other-key>
-				  </configuration>
-				</extension>
-			</extensions>
-        </graph>
-        
-        <!--  graph>
-            <graph-name>gratefulgraph</graph-name>
-            <graph-type>com.tinkerpop.rexster.config.TinkerGraphGraphConfiguration</graph-type>
-            <graph-file>data/graph-example-2.xml</graph-file>
-            <extensions>
-                <allows>
-                    <allow>tp:gremlin</allow>
-                </allows>
-            </extensions>
-        </graph -->
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </graphs>
 </rexster>
