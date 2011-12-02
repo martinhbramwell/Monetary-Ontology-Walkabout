@@ -1,3 +1,8 @@
 h1. Monetary-Ontology-Walkabout 
 
 So far there is only one project under version control here.  Please view its README "here":https://github.com/martinhbramwell/Monetary-Ontology-Walkabout/tree/master/rexster/extension/example/README.textile
+
+h2.      * * *   WARNING   * * * 
+
+Please be aware that for a variety of reasons I have had to drop work in this area.
+Rexster has changed dramatically since I did this, I've made no attempt to keep it up-to-date.
